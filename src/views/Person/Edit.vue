@@ -2,7 +2,19 @@
   <div id="app">
     <div class="hover clearfix">
       <div class="content">
-        <person-avatar/>
+
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:3000/user/upload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        >
+          <el-tooltip class="item" effect="dark" content="单击更换头像" placement="bottom">
+            <el-avatar :size="50" :src="avatar"></el-avatar>
+          </el-tooltip>
+        </el-upload>
+
         <div class="title">
           <span>&emsp;编辑个人资料</span>
         </div>
@@ -56,6 +68,7 @@ import changePassword from "../../components/ChangePassword";
 export default {
   data() {
     return {
+      avatar: "http://localhost:3000/avatar/default.png",
       ruleForm: {
         telephone: "17865579761",
         name: "吾忆那年秋",
@@ -94,6 +107,25 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    handleAvatarSuccess(res, file) {
+      console.log(res);
+      console.log(file);
+
+      this.avatar = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      console.log(file);
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 4;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 4MB!");
+      }
+      return isJPG && isLt2M;
     }
   },
   components: {
