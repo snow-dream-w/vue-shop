@@ -2,10 +2,9 @@
   <div id="app">
     <div class="hover clearfix">
       <div class="content">
-
         <el-upload
           class="avatar-uploader"
-          action="http://localhost:3000/user/upload"
+          action="/user/upload"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -40,7 +39,7 @@
             class="demo-ruleForm"
           >
             <el-form-item label="注册手机" prop="telephone" disabled>
-              <el-input v-model="ruleForm.telephone" :disabled="disabled"></el-input>
+              <el-input v-model="ruleForm.telephone" disabled></el-input>
             </el-form-item>
             <el-form-item label="昵称" prop="name" disabled>
               <el-input v-model="ruleForm.name" :disabled="disabled"></el-input>
@@ -67,60 +66,66 @@
 import changePassword from "../../components/ChangePassword";
 export default {
   data() {
+    var validateName = (rule, value, callback) => {
+      if (!value.match(/^[a-zA-Z0-9_\-\u4e00-\u9fa5]{4,12}$/)) {
+        callback(new Error("请输入中英文字符、数字或下划线组成的4-20位昵称！"));
+      } else {
+        callback();
+      }
+    };
     return {
-      avatar: "http://localhost:3000/avatar/default.png",
+      avatar: "/avatar/default.png",
       ruleForm: {
         telephone: "17865579761",
-        name: "吾忆那年秋",
-        sex: "男",
-        date: new Date("1900-01-01"),
-        articleNum: 0,
-        commentNum: 0
+        name: "",
+        sex: "男"
       },
       rules: {
         name: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 4, max: 20, message: "长度在 4 到 2 个字符", trigger: "blur" }
+          { required: true, message: "请输入昵称!", trigger: "change" },
+          { validator: validateName, trigger: "blur" }
         ],
-        sex: [{ required: true, message: "请选择活动区域", trigger: "change" }],
-        date: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change"
-          }
-        ]
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
       disabled: true
     };
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {});
+      let that = this;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.axios
+            .post("/user/edit/info", {
+              name: that.ruleForm.name,
+              sex: that.ruleForm.sex
+            })
+            .then(result => {
+              if (result.data.status === 1) {
+                that.$message({
+                  message: "修改成功！",
+                  type: "success"
+                });
+                that.disabled = !that.disabled
+              } else {
+                that.$message.error("修改失败，请重新尝试！");
+              }
+            });
+        }
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     handleAvatarSuccess(res, file) {
-      console.log(res);
-      console.log(file);
-
       this.avatar = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
-      console.log(file);
-      const isJPG = file.type === "image/jpeg";
+      const isJPG = (file.type === "image/jpeg") | (file.type === "image/png");
       const isLt2M = file.size / 1024 / 1024 < 4;
 
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error("上传头像图片只能是JPG/PNG格式!");
       }
       if (!isLt2M) {
         this.$message.error("上传头像图片大小不能超过 4MB!");
@@ -130,6 +135,15 @@ export default {
   },
   components: {
     changePassword
+  },
+  created() {
+    let that = this;
+    this.axios.get("/user/person").then(result => {
+      that.ruleForm.telephone = result.data.data.telephone;
+      that.ruleForm.name = result.data.data.name;
+      that.ruleForm.sex = result.data.data.sex;
+      that.avatar = result.data.data.avatar;
+    });
   }
 };
 </script>

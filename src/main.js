@@ -1,13 +1,16 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router/router';
-import store from './store/store';
+import store from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'iview/dist/styles/iview.css';
 
 //导入全局组件
 import PersonAvatar from '@/components/PersonAvatar.vue';
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);

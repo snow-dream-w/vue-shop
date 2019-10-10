@@ -22,7 +22,12 @@
       class="demo-ruleForm"
     >
       <el-form-item label="原密码" prop="oldpass">
-        <el-input type="password" v-model="ruleForm.oldpass" autocomplete="off" :disabled="disabled"></el-input>
+        <el-input
+          type="password"
+          v-model="ruleForm.oldpass"
+          autocomplete="off"
+          :disabled="disabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="新密码" prop="pass">
         <el-input type="password" v-model="ruleForm.pass" autocomplete="off" :disabled="disabled"></el-input>
@@ -67,9 +72,9 @@ export default {
     };
     return {
       ruleForm: {
-        oldpass: '122345',
-        pass: "123455122",
-        checkPass: "123456123"
+        oldpass: "",
+        pass: "",
+        checkPass: ""
       },
       rules: {
         pass: [{ validator: validatePass, trigger: "blur" }],
@@ -80,12 +85,24 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
+          that.axios
+            .post("/user/edit/password", {
+              oldPassword: that.ruleForm.oldpass,
+              newPassword: that.ruleForm.pass
+            })
+            .then(result => {
+              if (result.data.status === 1) {
+                that.$message({
+                  message: "密码修改成功！",
+                  type: "success"
+                });
+              } else {
+                that.$message.error("密码修改失败，请重新尝试！");
+              }
+            });
         }
       });
     },

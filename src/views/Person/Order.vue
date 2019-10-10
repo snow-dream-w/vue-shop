@@ -94,7 +94,7 @@ export default {
       console.log(key, keyPath);
     },
     handleClick(row) {
-      console.log(row);
+      this.$router.push('/order_detail/'+row.id)
     }
   }
 };

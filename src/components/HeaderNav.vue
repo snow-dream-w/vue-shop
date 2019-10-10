@@ -2,7 +2,7 @@
   <div id="nav">
     <div class="nav-content">
       <div class="welcome left">您好，欢迎来到二号小店</div>
-      <div class="login left" v-if="CLogin">
+      <div class="login left" v-if="login_status">
         <router-link to="/login_register/login">
           <span class="hover">登录</span>
         </router-link>|
@@ -11,8 +11,10 @@
         </router-link>
       </div>
       <div class="person left" v-else>
-        <span class="hover">个人中心</span> |
-        <span class="hover">注销</span>
+        <router-link to="/person">
+          <span class="hover">个人中心</span> |
+        </router-link>
+        <span class="hover" @click="logout">注销</span>
       </div>
       <ul class="right">
         <li class="hover">
@@ -28,12 +30,34 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "HeaderNav",
-  data() {
-    return {
-      CLogin: true
-    };
+  methods: {
+    logout() {
+      let that = this
+      this.axios.get("/user/logout").then(result => {
+        if (result.data.status === 1) {
+          that.$store.dispatch("changeAnsyc_login_status",true);
+          that.$router.push("/");
+        } else {
+          alert("注销失败，请重新尝试！")
+        }
+      });
+    }
+  },
+  computed: {
+    ...mapGetters({
+      login_status: "login_status"
+    })
+  },
+  created() {
+    let that = this;
+    this.axios.get("/user/check_login").then(result => {
+      if (result.data.status === 1) {
+        that.$store.dispatch("changeAnsyc_login_status",false);
+      }
+    });
   }
 };
 </script>

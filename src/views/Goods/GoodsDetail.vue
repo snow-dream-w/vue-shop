@@ -63,10 +63,10 @@
             <span class="num">{{ goodsInfo.inventoryNum }}</span>件
           </div>
           <el-divider></el-divider>&emsp;
-          <el-button type="primary">
+          <el-button type="primary" @click="addCar">
             <i class="el-icon-shopping-cart-2"></i>加入购物车
           </el-button>&emsp;
-          <el-button type="danger">
+          <el-button type="danger" @click="buyGoods">
             <i class="el-icon-trophy"></i>立即购买
           </el-button>
         </div>
@@ -169,6 +169,14 @@ export default {
     // 完全关闭之后，调用这个函数清理资源
     destroyHandler() {
       console.log("destroyHandler");
+    },
+    addCar(){
+      //添加购物车成功
+      alert('添加购物车成功')
+    },
+    buyGoods(){
+      //加入购物车，跳转购物车
+      this.$router.push('/cart')
     }
   },
   created() {

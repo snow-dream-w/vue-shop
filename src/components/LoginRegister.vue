@@ -1,18 +1,35 @@
 <template>
   <div class="l-r clearfix">
-    <el-form :model="ruleForm" status-icon :rules="rules" label-width="100px" class="demo-ruleForm">
+    <el-form
+      :model="ruleForm"
+      ref="ruleForm"
+      status-icon
+      :rules="rules"
+      label-width="100px"
+      class="demo-ruleForm"
+    >
       <el-tabs class="title" v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="登录" name="login"></el-tab-pane>
         <el-tab-pane label="注册" name="register"></el-tab-pane>
       </el-tabs>
-      <el-form-item label="用户名" prop="name">
-        <el-input v-model="ruleForm.name" autocomplete="off"></el-input>
+      <el-form-item label="手机号" prop="name">
+        <el-input v-model="ruleForm.name" placeholder="请输入11位手机号"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="pass">
-        <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+        <el-input
+          type="password"
+          v-model="ruleForm.pass"
+          autocomplete="off"
+          placeholder="请输入6-20位密码"
+        ></el-input>
       </el-form-item>
       <el-form-item v-if="choose" label="确认密码" prop="checkPass">
-        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        <el-input
+          type="password"
+          v-model="ruleForm.checkPass"
+          autocomplete="off"
+          placeholder="请输入6-20位密码"
+        ></el-input>
       </el-form-item>
       <div style="margin: 0 auto 15px 120px">
         <template v-if="choose">
@@ -24,30 +41,34 @@
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
+      <span class="point">{{ point }}</span>
     </el-form>
   </div>
 </template>
 <script>
+import { async } from "q";
 export default {
   name: "LoginRegister",
   data() {
     var checkAge = (rule, value, callback) => {
-      this.regResult = false;
       if (!value) {
-        return callback(new Error("用户名不能为空"));
+        return callback(new Error("手机号不能为空!"));
       }
       setTimeout(() => {
-        if (value.length < 4 || value.length > 16) {
-          callback(new Error("请输入4-16位字符"));
+        if (
+          !value.match(
+            /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/
+          )
+        ) {
+          callback(new Error("请输入11位合法手机号！"));
         } else {
           callback();
         }
       }, 1000);
     };
     var validatePass = (rule, value, callback) => {
-      this.regResult = false;
       if (value === "") {
-        callback(new Error("请输入密码"));
+        callback(new Error("请输入密码！"));
       } else {
         if (this.ruleForm.checkPass !== "") {
           this.$refs.ruleForm.validateField("checkPass");
@@ -56,7 +77,6 @@ export default {
       }
     };
     var validatePass2 = (rule, value, callback) => {
-      this.regResult = false;
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (value !== this.ruleForm.pass) {
@@ -79,19 +99,67 @@ export default {
       },
       choose: false,
       title: "登录",
-      activeName: "login"
+      activeName: "login",
+      point: "",
+      fromPath: "",
+      middle: {
+        name: "",
+        pass: ""
+      }
     };
   },
   methods: {
     submitForm(formName) {
+      let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("提交成功");
+          if (that.choose === false) {
+            that.login();
+          } else {
+            that.register();
+          }
         }
       });
     },
-    register() {},
-    login() {},
+    register() {
+      let that = this;
+      this.axios
+        .post("/user/register", {
+          telephone: that.ruleForm.name,
+          password: that.ruleForm.pass,
+          sex: that.ruleForm.radio
+        })
+        .then(result => {
+          if (result.data.status === 0) {
+            that.point = result.data.data;
+          } else {
+            this.$message({
+              message: "恭喜你，注册成功！请登录...",
+              type: "success"
+            });
+            that.middle.name = result.data.data.name;
+            that.middle.pass = that.ruleForm.pass;
+            that.activeName = "login";
+            that.point = "";
+          }
+        });
+    },
+    login() {
+      let that = this;
+      this.axios
+        .post("/user/login", {
+          telephone: that.ruleForm.name,
+          password: that.ruleForm.pass
+        })
+        .then(res => {
+          if (res.data.status === 0) {
+            that.point = res.data.data;
+          } else {
+            that.$store.dispatch("changeAnsyc_login_status", false);
+            that.$router.push(that.fromPath);
+          }
+        });
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -104,9 +172,20 @@ export default {
     }
   },
   watch: {
-    choose() {
-      this.ruleForm.name = "";
-      this.ruleForm.pass = "";
+    activeName(value) {
+      if (value === "register") {
+        this.middle.name = this.ruleForm.name;
+        this.middle.pass = this.ruleForm.pass;
+        this.ruleForm.name = "";
+        this.ruleForm.pass = "";
+        this.ruleForm.checkPass = "";
+        this.ruleForm.radio = "男";
+        this.choose = true;
+      } else {
+        this.ruleForm.name = this.middle.name;
+        this.ruleForm.pass = this.middle.pass;
+        this.choose = false;
+      }
     },
     "$route.path"(newRouter, oldRouter) {
       if (newRouter.includes("/register")) {
@@ -120,7 +199,11 @@ export default {
       }
     }
   },
-  components: {},
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.fromPath = from.path;
+    });
+  },
   created() {
     let idCard = this.$route.params.id;
     if (idCard == "register") {
@@ -151,6 +234,13 @@ export default {
     }
     .el-button {
       margin-left: 20px;
+    }
+    .point {
+      display: block;
+      text-indent: 1em;
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
     }
   }
 }

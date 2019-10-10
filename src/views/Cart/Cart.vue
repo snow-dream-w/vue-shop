@@ -51,7 +51,7 @@
       <div style="float: right;width:200px;">
         总计
         <span style="color: red;">￥{{ tatal.toFixed(2) }}</span>&emsp;
-        <el-button type="primary">结算</el-button>
+        <el-button type="primary" @click="carSettle">结算</el-button>
       </div>
     </div>
   </div>
@@ -113,11 +113,12 @@ export default {
       this.$refs.multipleTable.clearSelection();
     },
     handleSelectionChange(val) {
+      let b = []
       this.multipleSelection = val;
       this.tatal = 0;
       for (let item in val) {
         this.tatal += val[item].price * val[item].num;
-      }
+      }  
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -127,6 +128,9 @@ export default {
       this.$refs.multipleTable.toggleRowSelection(this.tableData[id-1]);
       this.$refs.multipleTable.toggleRowSelection(this.tableData[id-1]);
       // this.$refs.multipleTable.toggleRowSelection(index);
+    },
+    carSettle(){
+      this.$router.push('/choose_address')
     }
   }
 };

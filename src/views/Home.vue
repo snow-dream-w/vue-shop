@@ -125,7 +125,7 @@ export default {
     li {
       float: left;
       margin: 10px 1%;
-      width: 22.7%;
+      width: 23%;
       height: 300px;
       border: 1px solid #ddd;
       border-radius: 3px;

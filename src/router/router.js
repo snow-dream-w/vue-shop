@@ -10,6 +10,9 @@ const NotFound = () => import('@/views/NotFound.vue')
 const Cart = () => import('@/views/Cart/Cart.vue')
 const PersonMain = () => import('@/views/Person/PersonMain.vue')
 const GoodsDetail = () => import('@/views/Goods/GoodsDetail.vue')
+const ChooseAddress = () => import('@/views/Order/ChooseAddress.vue')
+const OrderDetail = () => import('@/views/Order/OrderDetail.vue')
+const PayOrder = () => import('@/views/Order/PayOrder.vue')
 
 //二级路由
 const Order = () => import('@/views/Person/Order.vue')
@@ -19,11 +22,11 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    {
-      path: '/',
-      name: 'home',
-      redirect: '/person/address'
-    },
+    // {
+    //   path: '/',
+    //   name: 'home',
+    //   redirect: '/person/address'
+    // },
     {
       path: '/',
       name: 'home',
@@ -72,6 +75,21 @@ export default new Router({
       path: '/goods/:id',
       name: 'goods',
       component: GoodsDetail
+    },
+    {
+      path: '/choose_address',
+      name: 'choose_address',
+      component: ChooseAddress
+    },
+    {
+      path: '/order_detail/:id',
+      name: 'order_detail',
+      component: OrderDetail
+    },
+    {
+      path: '/pay_order',
+      name: 'pay_order',
+      component: PayOrder
     },
     {
       path: '*',
