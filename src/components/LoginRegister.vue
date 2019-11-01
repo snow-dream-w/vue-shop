@@ -209,6 +209,14 @@ export default {
     if (idCard == "register") {
       this.choose = true;
       this.activeName = "register";
+    } else {
+      if (this.$store.state.public_attribute.login_status === false) {
+        this.$message({
+          message: "已登录，请勿重复登录!",
+          type: "warning"
+        });
+        this.$router.go(-1)
+      }
     }
   }
 };

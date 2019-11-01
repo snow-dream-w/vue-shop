@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import axios from 'axios'
 
 //公共组件
 const LoginRegister = () => import('@/components/LoginRegister.vue')
@@ -20,7 +21,7 @@ const Edit = () => import('@/views/Person/Edit.vue')
 const Address = () => import('@/views/Person/Address.vue')
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     // {
     //   path: '/',
@@ -40,35 +41,50 @@ export default new Router({
     {
       path: '/cart',
       name: 'cart',
-      component: Cart
+      component: Cart,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/person',
       name: 'person',
       component: PersonMain,
-      redirect:'/person/order',
+      redirect: '/person/order',
+      meta: {
+        requireAuth: true
+      },
       //二级路由
-      children :[
+      children: [
         {
           path: 'order',
           name: 'order',
-          component: Order
+          component: Order,
+          meta: {
+            requireAuth: true
+          }
         },
         {
           path: 'edit',
           name: 'edit',
-          component: Edit
+          component: Edit,
+          meta: {
+            requireAuth: true
+          }
         },
         {
           path: 'address',
           name: 'address',
-          component: Address
+          component: Address,
+          meta: {
+            requireAuth: true
+          }
         }
       ]
     },
     {
       path: '/login_register/:id',
-      namr: 'login_register',
+      name: 'login_register',
       component: LoginRegister
     },
     {
@@ -79,17 +95,26 @@ export default new Router({
     {
       path: '/choose_address',
       name: 'choose_address',
-      component: ChooseAddress
+      component: ChooseAddress,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/order_detail/:id',
       name: 'order_detail',
-      component: OrderDetail
+      component: OrderDetail,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/pay_order',
       name: 'pay_order',
-      component: PayOrder
+      component: PayOrder,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '*',
@@ -97,4 +122,18 @@ export default new Router({
       component: NotFound
     }
   ]
-})
+});
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.requireAuth) {
+//     axios.get('/user/check_login').then(result => {
+//       if (result.data.status === 1) {
+//         next()
+//       } else {
+//         next('/login_register/login')
+//       }
+//     })
+//   } else {
+//     next()
+//   }
+// });
+export default router

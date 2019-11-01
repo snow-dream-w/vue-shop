@@ -2,7 +2,7 @@
   <div class="home clearfix">
     <ul>
       <li v-for="item in list" :key="item.id" @click="handleGoodsInfo(item.id)">
-        <img :src="item.image" />
+        <img :src="item.images[0]" />
         <p>{{ item.name }}</p>
         <div class="bottom">
           <span class="money">{{ item.price | money }}</span>
@@ -33,64 +33,7 @@ export default {
       total: 0,
       limit: 8, //此条仅为限制数组
       page: 1, //当前页
-      list: [
-        {
-          id: 1,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        },
-        {
-          id: 2,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        },
-        {
-          id: 3,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        },
-        {
-          id: 4,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        },
-        {
-          id: 5,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        },
-        {
-          id: 6,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        },
-        {
-          id: 7,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        },
-        {
-          id: 8,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: parseFloat(15.01),
-          sales: 5
-        }
-      ]
+      list: []
     };
   },
   methods: {
@@ -103,7 +46,7 @@ export default {
       this.page = val;
     },
     handleGoodsInfo(id) {
-      this.$router.replace('/goods/'+id);
+      this.$router.replace("/goods/" + id);
     }
   },
   filters: {
@@ -112,7 +55,15 @@ export default {
     }
   },
   created() {
-    this.total = this.list.length;
+    let that = this;
+    this.axios.get(this.target_IP + "/goods/query/3").then(result => {
+      if (result.data.status === 1) {
+        that.list = result.data.data;
+        that.total = that.list.length;
+      } else {
+        alert(404);
+      }
+    });
   }
 };
 </script>
@@ -131,8 +82,9 @@ export default {
       border-radius: 3px;
       cursor: pointer;
       img {
-        padding: 10px;
+        padding: 1px;
         width: 100%;
+        height: 72%;
         background: rgb(204, 225, 233);
       }
       p {

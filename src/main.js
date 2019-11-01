@@ -19,16 +19,19 @@ Vue.use(ElementUI);
 import VuePreview from 'vue2-preview'
 Vue.use(VuePreview)
 
+//挂载地址,仅测试用，打包前设为空
+Vue.prototype.target_IP = "http://localhost:3000"
+
 import { Menu, MenuGroup, Icon, MenuItem, RadioGroup, Radio } from 'iview';
 //iview组件
-Vue.component('Menu',Menu);
-Vue.component('MenuGroup',MenuGroup);
-Vue.component('Icon',Icon);
-Vue.component('MenuItem',MenuItem);
-Vue.component('RadioGroup',RadioGroup);
-Vue.component('Radio',Radio);
+Vue.component('Menu', Menu);
+Vue.component('MenuGroup', MenuGroup);
+Vue.component('Icon', Icon);
+Vue.component('MenuItem', MenuItem);
+Vue.component('RadioGroup', RadioGroup);
+Vue.component('Radio', Radio);
 
-Vue.component('PersonAvatar',PersonAvatar);
+Vue.component('PersonAvatar', PersonAvatar);
 
 new Vue({
   router,

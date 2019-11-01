@@ -139,6 +139,9 @@ export default {
   created() {
     let that = this;
     this.axios.get("/user/person").then(result => {
+      if(result.data.status === 0){
+        that.$router.push('/login_register/login');
+      }
       that.ruleForm.telephone = result.data.data.telephone;
       that.ruleForm.name = result.data.data.name;
       that.ruleForm.sex = result.data.data.sex;

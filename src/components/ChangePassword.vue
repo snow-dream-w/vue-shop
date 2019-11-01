@@ -101,6 +101,9 @@ export default {
                 });
               } else {
                 that.$message.error("密码修改失败，请重新尝试！");
+                if (result.data.status === 0) {
+                  that.$router.push("/login_register/login");
+                }
               }
             });
         }
