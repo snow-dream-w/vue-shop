@@ -1,7 +1,7 @@
 <template>
   <div class="home clearfix">
     <ul>
-      <li v-for="item in list" :key="item.id" @click="handleGoodsInfo(item.id)">
+      <li v-for="item in list" :key="item.id" @click="handleGoodsInfo(item._id)">
         <img :src="item.images[0]" />
         <p>{{ item.name }}</p>
         <div class="bottom">
@@ -17,7 +17,7 @@
           :page-sizes="[8, 12, 16]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="80"
+          :total="total"
         ></el-pagination>
       </div>
     </ul>
@@ -29,7 +29,7 @@ export default {
   name: "home",
   data() {
     return {
-      currentPage: 4,
+      currentPage: 0,
       total: 0,
       limit: 8, //此条仅为限制数组
       page: 1, //当前页
@@ -42,8 +42,23 @@ export default {
       this.limit = val;
     },
     handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`);
-      this.page = val;
+      let that = this;
+      this.axios
+        .get(this.target_IP + "/goods/query", {
+          params: {
+            limit: 8,
+            status: 1,
+            skip: val-1
+          }
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            that.list = result.data.data;
+            that.total = result.data.count;
+          } else {
+            alert(404);
+          }
+        });
     },
     handleGoodsInfo(id) {
       this.$router.replace("/goods/" + id);
@@ -56,14 +71,21 @@ export default {
   },
   created() {
     let that = this;
-    this.axios.get(this.target_IP + "/goods/query/3").then(result => {
-      if (result.data.status === 1) {
-        that.list = result.data.data;
-        that.total = that.list.length;
-      } else {
-        alert(404);
-      }
-    });
+    this.axios
+      .get(this.target_IP + "/goods/query", {
+        params: {
+          limit: 8,
+          status: 1
+        }
+      })
+      .then(result => {
+        if (result.data.status === 1) {
+          that.list = result.data.data;
+          that.total = result.data.count;
+        } else {
+          alert(404);
+        }
+      });
   }
 };
 </script>

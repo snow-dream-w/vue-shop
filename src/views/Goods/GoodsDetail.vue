@@ -6,7 +6,7 @@
           <div class="content">
             <div class="block">
               <el-carousel trigger="click" direction="vertical" height="450px">
-                <el-carousel-item v-for="item in goodsInfo.images" :key="item.id">
+                <el-carousel-item v-for="item in goodsInfo.images" :key="item._id">
                   <img :src="item.src" />
                 </el-carousel-item>
               </el-carousel>
@@ -54,7 +54,7 @@
             <span>{{goodsInfo.sales}}</span>
             <el-divider></el-divider>数量
             <el-input-number
-              v-model="goodsInfo.num"
+              v-model="buyNum"
               @change="handleChange"
               :min="1"
               :max="goodsInfo.inventoryNum"
@@ -80,49 +80,21 @@ export default {
   data() {
     return {
       goodsInfo: {
-        id: 1,
         images: [
           {
             id: 1,
-            src: require("@/assets/logo.png")
-          },
-          {
-            id: 2,
-            src: require("@/assets/logo.png")
-          },
-          {
-            id: 3,
-            src: require("@/assets/logo.png")
-          },
-          {
-            id: 4,
-            src: require("@/assets/logo.png")
+            src: null
           }
         ],
         name: "Vue套餐",
         price: parseFloat(15.01),
-        num: 12,
         unit: "件",
         sales: 5,
         inventoryNum: 10,
         commentNum: 15
       },
+      buyNum: 1,
       list: [
-        {
-          src: require("@/assets/logo.png"),
-          w: 720,
-          h: 400
-        },
-        {
-          src: require("@/assets/logo.png"),
-          w: 720,
-          h: 400
-        },
-        {
-          src: require("@/assets/logo.png"),
-          w: 720,
-          h: 400
-        },
         {
           src: require("@/assets/logo.png"),
           w: 720,
@@ -170,17 +142,36 @@ export default {
     destroyHandler() {
       console.log("destroyHandler");
     },
-    addCar(){
+    addCar() {
       //添加购物车成功
-      alert('添加购物车成功')
+      alert("添加购物车成功");
     },
-    buyGoods(){
+    buyGoods() {
       //加入购物车，跳转购物车
-      this.$router.push('/cart')
+      this.$router.push("/cart");
     }
   },
   created() {
-    console.log(this.$route.params.id);
+    let that = this;
+    this.axios
+      .get(this.target_IP + "/goods/goodsDetail/" + this.$route.params.id)
+      .then(result => {
+        if(result.data.status === 1){
+          that.goodsInfo = result.data.data;
+          for (let index = 0; index < result.data.data.images.length; index++) {
+            let obj = {
+              id: index,
+              w: 720,
+              h: 400,
+              src: that.target_IP + result.data.data.images[index]
+            }
+            result.data.data.images[index] = obj
+            that.list[index] = obj
+          }
+        } else {
+          alert(404);
+        }
+      });
   }
 };
 </script>
@@ -190,7 +181,7 @@ export default {
   .index:hover .index2 {
     z-index: 0;
   }
-  .index2{
+  .index2 {
     position: relative;
     z-index: -1;
   }
