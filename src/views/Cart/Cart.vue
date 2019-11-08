@@ -14,27 +14,27 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="图片" width="140">
           <template slot-scope="scope">
-            <img :src="scope.row.image" width="50px" />
+            <img :src="scope.row.goodsId.images[0]" width="50px" />
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="名称" width="160"></el-table-column>
-        <el-table-column prop="price" label="单价" width="120"></el-table-column>
+        <el-table-column prop="goodsId.name" label="名称" width="160"></el-table-column>
+        <el-table-column prop="goodsId.price" label="单价" width="120"></el-table-column>
         <el-table-column label="数量" width="240">
           <template slot-scope="scope">
             <el-input-number
               v-model="scope.row.num"
               @change="handleChange(scope.row.id)"
               :min="1"
-              :max="scope.row.count"
+              :max="scope.row.goodsId.inventoryNum"
               label="描述文字"
             ></el-input-number>
           </template>
         </el-table-column>
-        <el-table-column prop="count" label="库存/件" width="100"></el-table-column>
-        <el-table-column prop="danwei" label="单位" width="100"></el-table-column>
+        <el-table-column prop="goodsId.inventoryNum" label="库存/件" width="100"></el-table-column>
+        <el-table-column prop="goodsId.unit" label="单位" width="100"></el-table-column>
         <el-table-column label="小计" width="120">
           <template slot-scope="scope">
-            <span>￥{{ scope.row.num*scope.row.price.toFixed(2) }}</span>
+            <span>￥{{ scope.row.num*scope.row.goodsId.price.toFixed(2) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -65,43 +65,15 @@ export default {
       tableData: [
         {
           id: 1,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: 15.99,
-          num: 2,
-          count: 10,
-          danwei: "斤",
-          money: 0
-        },
-        {
-          id: 2,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: 15.99,
-          num: 2,
-          count: 10,
-          danwei: "斤",
-          money: 0
-        },
-        {
-          id: 3,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: 15.99,
-          num: 2,
-          count: 10,
-          danwei: "斤",
-          money: 0
-        },
-        {
-          id: 4,
-          image: require("@/assets/logo.png"),
-          name: "Vue套餐",
-          price: 15.99,
-          num: 2,
-          count: 10,
-          danwei: "斤",
-          money: 0
+          goodsId: {
+            images: [],
+            name: "Vue套餐",
+            price: 15.99,
+            inventoryNum: 10,
+            unit: "斤",
+            money: 0
+          },
+          num: 2
         }
       ],
       multipleSelection: [],
@@ -113,25 +85,36 @@ export default {
       this.$refs.multipleTable.clearSelection();
     },
     handleSelectionChange(val) {
-      let b = []
+      let b = [];
       this.multipleSelection = val;
       this.tatal = 0;
       for (let item in val) {
-        this.tatal += val[item].price * val[item].num;
-      }  
+        this.tatal += val[item].goodsId.price * val[item].num;
+      }
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      this.axios.delete("/car/delete/" + row._id).then(result => {
+        console.log(result);
+      });
     },
     handleChange(index) {
-      let id = new Number(index)
-      this.$refs.multipleTable.toggleRowSelection(this.tableData[id-1]);
-      this.$refs.multipleTable.toggleRowSelection(this.tableData[id-1]);
+      let id = new Number(index);
+      this.$refs.multipleTable.toggleRowSelection(this.tableData[id - 1]);
+      this.$refs.multipleTable.toggleRowSelection(this.tableData[id - 1]);
       // this.$refs.multipleTable.toggleRowSelection(index);
     },
-    carSettle(){
-      this.$router.push('/choose_address')
+    carSettle() {
+      this.$router.push("/choose_address");
     }
+  },
+  created() {
+    let that = this;
+    this.axios.get("/car/get").then(result => {
+      that.tableData = result.data.data;
+      for (let index = 0; index < that.tableData.length; index++) {
+        that.tableData[index]["id"] = index + 1;
+      }
+    });
   }
 };
 </script>

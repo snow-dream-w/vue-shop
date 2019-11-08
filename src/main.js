@@ -10,6 +10,7 @@ import 'iview/dist/styles/iview.css';
 import PersonAvatar from '@/components/PersonAvatar.vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+axios.defaults.baseURL="http://localhost:3000";
 Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false;
@@ -20,7 +21,7 @@ import VuePreview from 'vue2-preview'
 Vue.use(VuePreview)
 
 //挂载地址,仅测试用，打包前设为空
-Vue.prototype.target_IP = "http://localhost:3000"
+// Vue.prototype.target_IP = "http://localhost:3000"
 
 import { Menu, MenuGroup, Icon, MenuItem, RadioGroup, Radio } from 'iview';
 //iview组件

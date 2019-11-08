@@ -44,7 +44,7 @@ export default {
     handleCurrentChange(val) {
       let that = this;
       this.axios
-        .get(this.target_IP + "/goods/query", {
+        .get("/goods/query", {
           params: {
             limit: 8,
             status: 1,
@@ -72,7 +72,7 @@ export default {
   created() {
     let that = this;
     this.axios
-      .get(this.target_IP + "/goods/query", {
+      .get("/goods/query", {
         params: {
           limit: 8,
           status: 1

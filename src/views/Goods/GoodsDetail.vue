@@ -143,20 +143,50 @@ export default {
       console.log("destroyHandler");
     },
     addCar() {
-      //添加购物车成功
-      alert("添加购物车成功");
+      let that = this;
+      this.axios
+        .post("/car/add", {
+          goodsId: this.goodsInfo._id,
+          num: this.buyNum
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            that.$notify({
+              title: "成功",
+              message: "成功加入购物车",
+              type: "success"
+            });
+          } else if (result.data.data == "未登录") {
+            that.$router.push("/login_register/login");
+          } else {
+            that.$router.push("*");
+          }
+        });
     },
     buyGoods() {
-      //加入购物车，跳转购物车
-      this.$router.push("/cart");
+      let that = this;
+      this.axios
+        .post("/car/add", {
+          goodsId: this.goodsInfo._id,
+          num: this.buyNum
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            that.$router.push("/cart");
+          } else if (result.data.data == "未登录") {
+            that.$router.push("/login_register/login");
+          } else {
+            that.$router.push("*");
+          }
+        });
     }
   },
   created() {
     let that = this;
     this.axios
-      .get(this.target_IP + "/goods/goodsDetail/" + this.$route.params.id)
+      .get("/goods/goodsDetail/" + this.$route.params.id)
       .then(result => {
-        if(result.data.status === 1){
+        if (result.data.status === 1) {
           that.goodsInfo = result.data.data;
           for (let index = 0; index < result.data.data.images.length; index++) {
             let obj = {
@@ -164,9 +194,9 @@ export default {
               w: 720,
               h: 400,
               src: that.target_IP + result.data.data.images[index]
-            }
-            result.data.data.images[index] = obj
-            that.list[index] = obj
+            };
+            result.data.data.images[index] = obj;
+            that.list[index] = obj;
           }
         } else {
           alert(404);

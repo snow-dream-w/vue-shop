@@ -123,17 +123,17 @@ const router = new Router({
     }
   ]
 });
-// router.beforeEach((to, from, next) => {
-//   if (to.meta.requireAuth) {
-//     axios.get('/user/check_login').then(result => {
-//       if (result.data.status === 1) {
-//         next()
-//       } else {
-//         next('/login_register/login')
-//       }
-//     })
-//   } else {
-//     next()
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    axios.get('/user/check_login').then(result => {
+      if (result.data.status === 1) {
+        next()
+      } else {
+        next('/login_register/login')
+      }
+    })
+  } else {
+    next()
+  }
+});
 export default router

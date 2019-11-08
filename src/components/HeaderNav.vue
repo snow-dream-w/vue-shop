@@ -53,7 +53,7 @@ export default {
   },
   created() {
     let that = this;
-    this.axios.get(this.target_IP + "/user/check_login").then(result => {
+    this.axios.get("/user/check_login").then(result => {
       if (result.data.status === 1) {
         that.$store.dispatch("changeAnsyc_login_status",false);
       }
