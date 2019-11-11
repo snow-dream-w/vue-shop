@@ -62,22 +62,10 @@ export default {
   name: "Cart",
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          goodsId: {
-            images: [],
-            name: "Vue套餐",
-            price: 15.99,
-            inventoryNum: 10,
-            unit: "斤",
-            money: 0
-          },
-          num: 2
-        }
-      ],
+      tableData: [],
       multipleSelection: [],
-      tatal: 0
+      tatal: 0,
+      dialogVisible: false
     };
   },
   methods: {
@@ -93,9 +81,7 @@ export default {
       }
     },
     handleDelete(index, row) {
-      this.axios.delete("/car/delete/" + row._id).then(result => {
-        console.log(result);
-      });
+      this.open(row._id);
     },
     handleChange(index) {
       let id = new Number(index);
@@ -104,7 +90,36 @@ export default {
       // this.$refs.multipleTable.toggleRowSelection(index);
     },
     carSettle() {
+      if(this.multipleSelection.length === 0){
+        this.$message.error('请选择要结算的商品');
+        return;
+      }
+      this.$store.dispatch("changeAnsyc_select_goods", this.multipleSelection);
       this.$router.push("/choose_address");
+    },
+    open(_id) {
+      let that = this;
+      this.$confirm("将该商品从购物车删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          that.axios.delete("/car/delete/" + _id).then(result => {
+            if (result.data.status === 1) {
+              for (let index in that.tableData) {
+                const element = that.tableData[index];
+                if (element._id === _id) {
+                  that.tableData.splice(index, 1);
+                  break;
+                }
+              }
+            } else{
+              that.$router.push('*')
+            }
+          });
+        })
+        .catch(() => {});
     }
   },
   created() {

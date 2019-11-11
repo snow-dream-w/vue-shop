@@ -139,7 +139,7 @@ export default {
     };
   },
   watch: {
-    radio(oldval, newval) {
+    radio(newval, oldval) {
       console.log(newval);
     }
   },
@@ -151,6 +151,9 @@ export default {
     goPay(){
         this.$router.push('/pay_order')
     }
+  },
+  created(){
+    console.log(this.$store.state.car_manager.carInfo);
   }
 };
 </script>
