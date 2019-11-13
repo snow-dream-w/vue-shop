@@ -6,7 +6,7 @@
         <div class="title">
           <span style="fontSize: 20px;fontWeight: bold;lineHeight: 80px;">&emsp;管理收货地址</span>
           <div style="float: right;margin:15px 10px 0 0;">
-            <el-button type="primary">新增地址</el-button>
+            <el-button type="primary" @click="$refs.addressEdit.isShow()">新增地址</el-button>
           </div>
         </div>
         <div class="address">
@@ -32,10 +32,12 @@
         </div>
       </div>
     </div>
+    <edit-address ref="addressEdit"/>
   </div>
 </template>
 
 <script>
+import EditAddress from '@/components/EditAddress.vue'
 export default {
   data() {
     return {
@@ -85,13 +87,17 @@ export default {
           post: "200333",
           default: "设为默认"
         }
-      ]
+      ],
+      isShowEdit: false
     };
   },
   methods: {
     handleClick(row) {
       console.log(row);
     }
+  },
+  components: {
+    EditAddress
   }
 };
 </script>

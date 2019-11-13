@@ -6,7 +6,6 @@ import axios from 'axios'
 const LoginRegister = () => import('@/components/LoginRegister.vue')
 //一级路由
 const Home = () => import('@/views/Home.vue')
-const About = () => import('@/views/About.vue')
 const NotFound = () => import('@/views/NotFound.vue')
 const Cart = () => import('@/views/Cart/Cart.vue')
 const PersonMain = () => import('@/views/Person/PersonMain.vue')
@@ -23,20 +22,10 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   redirect: '/person/address'
-    // },
     {
       path: '/',
       name: 'home',
-      component: About
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: About
+      component: Home
     },
     {
       path: '/cart',
@@ -123,17 +112,17 @@ const router = new Router({
     }
   ]
 });
-router.beforeEach((to, from, next) => {
-  if (to.meta.requireAuth) {
-    axios.get('/user/check_login').then(result => {
-      if (result.data.status === 1) {
-        next()
-      } else {
-        next('/login_register/login')
-      }
-    })
-  } else {
-    next()
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.requireAuth) {
+//     axios.get('/user/check_login').then(result => {
+//       if (result.data.status === 1) {
+//         next()
+//       } else {
+//         next('/login_register/login')
+//       }
+//     })
+//   } else {
+//     next()
+//   }
+// });
 export default router
