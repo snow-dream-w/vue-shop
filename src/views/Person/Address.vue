@@ -6,98 +6,119 @@
         <div class="title">
           <span style="fontSize: 20px;fontWeight: bold;lineHeight: 80px;">&emsp;管理收货地址</span>
           <div style="float: right;margin:15px 10px 0 0;">
-            <el-button type="primary" @click="$refs.addressEdit.isShow()">新增地址</el-button>
+            <el-button type="primary" @click="$refs.addressEdit.isShow('add')">新增地址</el-button>
           </div>
         </div>
         <div class="address">
           <el-table :data="tableData" border>
             <el-table-column prop="name" label="收货人" width="80"></el-table-column>
             <el-table-column prop="telephone" label="联系方式" width="120"></el-table-column>
-            <el-table-column prop="city" label="地区" width="160"></el-table-column>
-            <el-table-column prop="address" label="详细地址" width="240"></el-table-column>
+            <el-table-column prop="address.area" label="地区" width="160"></el-table-column>
+            <el-table-column prop="address.details" label="详细地址" width="240"></el-table-column>
             <el-table-column prop="post" label="邮编" width="80"></el-table-column>
-            <el-table-column prop="default" label="默认地址" width="120" align="center">
+            <el-table-column prop="defaultAddress" label="默认地址" width="120" align="center">
               <template slot-scope="scope">
-                <el-button type="primary" size="mini">{{scope.row.default}}</el-button>
+                <el-button
+                  :type="scope.row.primary"
+                  size="mini"
+                  @click="handleDefault(scope.row._id)"
+                >{{scope.row.defaultAddress}}</el-button>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="120">
               <template slot-scope="scope">
-                <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                <el-button type="text" size="small">编辑</el-button>
-                <el-button type="text" size="small">删除</el-button>
+                <el-button @click="handleQuery(scope.row)" type="text" size="small">查看</el-button>
+                <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
+                <el-button @click="handleDelete(scope.row._id)" type="text" size="small">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
       </div>
     </div>
-    <edit-address ref="addressEdit"/>
+    <edit-address ref="addressEdit" @initParent="init" />
   </div>
 </template>
 
 <script>
-import EditAddress from '@/components/EditAddress.vue'
+import EditAddress from "@/components/EditAddress.vue";
 export default {
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          name: "王小虎",
-          telephone: "17865579761",
-          city: "山东省烟台市莱山区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          post: "200333",
-          default: "默认地址"
-        },
-        {
-          id: 2,
-          name: "王小虎",
-          telephone: "17865579761",
-          city: "山东省烟台市莱山区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          post: "200333",
-          default: "设为默认"
-        },
-        {
-          id: 3,
-          name: "王小虎",
-          telephone: "17865579761",
-          city: "山东省烟台市莱山区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          post: "200333",
-          default: "设为默认"
-        },
-        {
-          id: 4,
-          name: "王小虎",
-          telephone: "17865579761",
-          city: "山东省烟台市莱山区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          post: "200333",
-          default: "设为默认"
-        },
-        {
-          id: 5,
-          name: "王小虎",
-          telephone: "17865579761",
-          city: "山东省烟台市莱山区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          post: "200333",
-          default: "设为默认"
-        }
-      ],
-      isShowEdit: false
+      tableData: []
     };
   },
   methods: {
-    handleClick(row) {
-      console.log(row);
+    handleQuery(row) {
+      this.$refs.addressEdit.isShow("query");
+      this.$refs.addressEdit.init(row);
+    },
+    handleEdit(row) {
+      this.$refs.addressEdit.isShow("edit");
+      this.$refs.addressEdit.init(row);
+    },
+    handleDefault(_id) {
+      this.axios
+        .post("/address/default", {
+          _id: _id
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            this.init();
+          } else {
+            this.$message.error("设置默认地址失败，请重新尝试");
+          }
+        })
+        .catch(err => {
+          this.$router.push("/*");
+        });
+    },
+    handleDelete(_id) {
+      this.axios
+        .delete("/address/delete/" + _id)
+        .then(result => {
+          if (result.data.status === 1) {
+            this.init();
+          } else {
+            this.$message({
+              type: "warning",
+              message: "默认地址不可删除！"
+            });
+          }
+        })
+        .catch(err => {
+          this.$router.push("/*");
+        });
+    },
+    init() {
+      this.axios
+        .get("/address/get/10")
+        .then(result => {
+          if (result.data.status === 1) {
+            result.data.data.forEach((element, index) => {
+              if (element.defaultAddress === 1) {
+                result.data.data[index].defaultAddress = "默认地址";
+                result.data.data[index]["primary"] = "primary";
+              } else {
+                result.data.data[index].defaultAddress = "设为默认";
+                result.data.data[index]["primary"] = "info";
+              }
+            });
+            this.tableData = result.data.data;
+          } else {
+            this.$message.error("数据请求失败，请刷新重新尝试");
+          }
+        })
+        .catch(err => {
+          this.$router.push("/*");
+        });
     }
   },
   components: {
     EditAddress
+  },
+  created() {
+    this.init();
   }
 };
 </script>
