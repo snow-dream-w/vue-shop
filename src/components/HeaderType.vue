@@ -9,7 +9,7 @@
       >
         <ul class="first-menu">
           <router-link :to="{name: 'home'}">
-            <li class="first first-menu-li">
+            <li class="first first-menu-li" @click="resetGoodsType()">
               全部商品
               <i v-if="CIcon" class="el-icon-caret-right"></i>
               <i v-else class="el-icon-caret-bottom"></i>
@@ -19,20 +19,20 @@
           <li
             class="menu-list first-menu-li"
             v-for="(items,index) in menuList"
-            :key="items.id"
+            :key="items.value"
             v-on:mouseover.capture="handleHoverOver(index)"
             v-on:mouseout="handleHoverOut(index)"
           >
-            {{items.name}}
+            {{items.label}}
             <i class="el-icon-arrow-right"></i>
             <ul class="second">
               <router-link :to="{name: 'home'}">
                 <li
                   class="second-menu"
-                  v-for="item in items.type"
-                  :key="item.id"
-                  @click="menuStyle(index)"
-                >{{item.name}}</li>
+                  v-for="item in items.children"
+                  :key="item.value"
+                  @click="menuStyle(index, item.value)"
+                >{{item.label}}</li>
               </router-link>
             </ul>
           </li>
@@ -56,80 +56,92 @@ export default {
       CIcon: false,
       menuList: [
         {
-          id: 0,
-          name: "水果",
-          type: [
+          value: "pinzhishengxian",
+          label: "品质生鲜",
+          children: [
             {
-              id: 0,
-              name: "梨子"
+              value: "shuiguo",
+              label: "水果"
             },
             {
-              id: 1,
-              name: "苹果"
+              value: "shuicai",
+              label: "蔬菜"
             }
           ]
         },
         {
-          id: 1,
-          name: "蔬菜",
-          type: [
+          value: "meizhuanghuli",
+          label: "美妆护理",
+          children: [
             {
-              id: 0,
-              name: "菠菜"
+              value: "caizhuangxiangshui",
+              label: "彩妆香水"
             },
             {
-              id: 1,
-              name: "小白菜"
+              value: "mianmoyanghu",
+              label: "面膜养护"
+            },
+            {
+              value: "gerenqingjie",
+              label: "个人清洁"
             }
           ]
         },
         {
-          id: 2,
-          name: "优质生鲜",
-          type: [
+          value: "jingzhishenghuo",
+          label: "精致生活",
+          children: [
             {
-              id: 0,
-              name: "菠菜"
+              value: "jiajujiadian",
+              label: "家具家电"
             },
             {
-              id: 1,
-              name: "小白菜"
+              value: "yundonghuwai",
+              label: "运动户外"
+            },
+            {
+              value: "xiefuxiangbao",
+              label: "鞋服箱包"
             }
           ]
         },
         {
-          id: 3,
-          name: "智商感人",
-          type: [
+          value: "chajiuyinliao",
+          label: "茶酒饮料",
+          children: [
             {
-              id: 0,
-              name: "菠菜"
+              value: "putaojiu",
+              label: "葡萄酒"
             },
             {
-              id: 1,
-              name: "小白菜"
+              value: "baijiu",
+              label: "白酒"
             },
             {
-              id: 2,
-              name: "菠菜巴拉"
+              value: "pijiu",
+              label: "啤酒"
             },
             {
-              id: 3,
-              name: "小白菜"
+              value: "guozhiyinliao",
+              label: "果汁饮料"
             }
           ]
         },
         {
-          id: 4,
-          name: "去你妹的",
-          type: [
+          value: "nongditechan",
+          label: "农地特产",
+          children: [
             {
-              id: 0,
-              name: "菠菜"
+              value: "wuguzaliang",
+              label: "五谷杂粮"
             },
             {
-              id: 1,
-              name: "小白菜"
+              value: "shanzhenganhuo",
+              label: "山珍干货"
+            },
+            {
+              value: "liangyoufushi",
+              label: "粮油副食"
             }
           ]
         }
@@ -195,7 +207,8 @@ export default {
       let second = document.querySelectorAll(".second");
       second[index].style.display = "none";
     },
-    menuStyle(index) {
+    menuStyle(index, type) {
+      this.$store.dispatch("changeAnsyc_goods_type",type);
       let firstMenu = document.querySelectorAll(".menu-list");
       firstMenu.forEach(function(e) {
         e.classList.remove("first-menu-bg");
@@ -204,6 +217,9 @@ export default {
 
       let second = document.querySelectorAll(".second");
       second[index].style.display = "none";
+    },
+    resetGoodsType(){
+      this.$store.dispatch("changeAnsyc_goods_type",'');
     }
   },
   computed: {
@@ -298,7 +314,8 @@ export default {
             background: #fff;
             .second-menu {
               float: left;
-              padding: 0 8px;
+              padding: 0 4px;
+              line-height: 30px;
               border-left: 2px solid rgb(236, 94, 58);
               line-height: 15px;
               font-size: 15px;

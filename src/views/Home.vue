@@ -6,7 +6,7 @@
         <p>{{ item.name }}</p>
         <div class="bottom">
           <span class="money">{{ item.price | money }}</span>
-          <span v-cloak class="num">{{ item.num }}人付款</span>
+          <span v-cloak class="num">{{ item.sales }}人付款</span>
         </div>
       </li>
       <div class="block">
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "home",
   data() {
@@ -40,21 +41,21 @@ export default {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
       this.limit = val;
+      this.init();
     },
     handleCurrentChange(val) {
-      let that = this;
       this.axios
         .get("/goods/query", {
           params: {
             limit: 8,
             status: 1,
-            skip: val-1
+            skip: val - 1
           }
         })
         .then(result => {
           if (result.data.status === 1) {
-            that.list = result.data.data;
-            that.total = result.data.count;
+            this.list = result.data.data;
+            this.total = result.data.count;
           } else {
             alert(404);
           }
@@ -62,6 +63,29 @@ export default {
     },
     handleGoodsInfo(id) {
       this.$router.replace("/goods/" + id);
+    },
+    init(goods_type) {
+      this.axios
+        .get("/goods/query", {
+          params: {
+            type: goods_type,
+            limit: this.limit,
+            status: 1
+          }
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            this.list = result.data.data;
+            this.total = result.data.count;
+          } else {
+            alert(404);
+          }
+        });
+    }
+  },
+  watch: {
+    goods_type: function(newVal, oldVal) {
+      this.init(newVal)
     }
   },
   filters: {
@@ -69,29 +93,20 @@ export default {
       return "￥" + data.toFixed(2);
     }
   },
+  computed: {
+    ...mapGetters({
+      goods_type: "goods_type"
+    })
+  },
   created() {
-    let that = this;
-    this.axios
-      .get("/goods/query", {
-        params: {
-          limit: 8,
-          status: 1
-        }
-      })
-      .then(result => {
-        if (result.data.status === 1) {
-          that.list = result.data.data;
-          that.total = result.data.count;
-        } else {
-          alert(404);
-        }
-      });
+    this.init('');
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .home {
+  min-height: 400px;
   ul {
     float: right;
     width: 940px;
