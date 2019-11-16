@@ -98,7 +98,7 @@ const router = new Router({
       }
     },
     {
-      path: '/pay_order',
+      path: '/pay_order/:orderId',
       name: 'pay_order',
       component: PayOrder,
       meta: {

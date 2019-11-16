@@ -13,8 +13,8 @@
           <el-table :data="tableData" border>
             <el-table-column prop="name" label="收货人" width="80"></el-table-column>
             <el-table-column prop="telephone" label="联系方式" width="120"></el-table-column>
-            <el-table-column prop="address.area" label="地区" width="160"></el-table-column>
-            <el-table-column prop="address.details" label="详细地址" width="240"></el-table-column>
+            <el-table-column prop="address.area" label="地区" width="170"></el-table-column>
+            <el-table-column prop="address.details" label="详细地址" width="230"></el-table-column>
             <el-table-column prop="post" label="邮编" width="80"></el-table-column>
             <el-table-column prop="defaultAddress" label="默认地址" width="120" align="center">
               <template slot-scope="scope">

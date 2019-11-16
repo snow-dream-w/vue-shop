@@ -131,6 +131,7 @@ export default {
                     message: "地址添加成功"
                   });
                   this.$emit("initParent");
+                  this.$emit('getAddress')
                   this.dialogFormVisible = false;
                 } else {
                   this.$message.error("添加失败，请重新尝试");

@@ -99,7 +99,7 @@ export default {
     })
   },
   created() {
-    this.init('');
+    this.init(this.goods_type);
   }
 };
 </script>

@@ -2,9 +2,17 @@ const state = {
     carInfo: []
 }
 const getters = {
-    get_select_goods: state => {
-        return state.carInfo
-    }
+    get_goods_total: state => {
+        let total = 0
+        state.carInfo.forEach(element => {
+            if(element.goodsId.discount.status === 1){
+                total += element.num * element.goodsId.price * element.goodsId.discount.percent
+            } else {
+                total += element.num * element.goodsId.price
+            }
+        });
+        return total
+    },
 }
 const mutations = {
     change_select_goods: (state, carInfo) => (state.carInfo = carInfo)

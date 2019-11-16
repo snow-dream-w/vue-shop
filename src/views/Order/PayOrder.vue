@@ -5,18 +5,18 @@
         <div id="hr"></div>
         <div id="order">
           <p class="title">订单提交成功，请您尽快付款！</p>
-          <span v-cloak>订单编号：{{ orderId }}</span> |
+          <span v-cloak>订单编号：{{ orderInfo._id }}</span> |
           <span v-cloak>
             付款金额:
-            <span class="money">{{ total | money }}</span>元
+            <span class="money">{{ orderInfo.total | money }}</span>元
           </span>
           <div class="detail">
             订单金额:
-            <span>{{ total | money }}</span>元
+            <span>{{ orderInfo.total | money }}</span>元
             <br />收货信息:
-            <span>{{ address.area }} {{ address.details }}</span>
+            <span>{{ orderInfo.address.area.join(' ') }} {{ orderInfo.address.details }}</span>
             <br />下单时间:
-            <span>{{ createAt }}</span>
+            <span>{{ orderInfo.created }}</span>
           </div>
         </div>
         <div class="pay">
@@ -28,7 +28,7 @@
             </el-checkbox-group>
           </div>
           <div class="submit">
-            <el-button type="primary">确认支付</el-button>
+            <el-button type="primary" @click="openInputPassword">确认支付</el-button>
           </div>
         </div>
       </div>
@@ -40,20 +40,85 @@
 export default {
   data() {
     return {
-      orderId: "M11908251257461370",
-      total: 316,
-      address: {
-        area: "山东省 烟台市 莱山区",
-        details: "山东工商学院"
+      orderInfo: {
+        address: {
+          area: []
+        }
       },
-      createAt: "2020/02/02 21.09.21",
       radio: "1"
     };
   },
   filters: {
     money(data) {
-      return "￥" + data.toFixed(2);
+      return "￥" + new Number(data).toFixed(2);
     }
+  },
+  methods: {
+    initOrder(orderId) {
+      this.axios
+        .get(`/order/get/${orderId}`)
+        .then(result => {
+          if (result.data.status === 1) {
+            this.orderInfo = result.data.data;
+          } else {
+            this.$router.push("/*");
+          }
+        })
+        .catch(err => {
+          console.log(err, "++--++");
+          this.$router.push("/*");
+        });
+    },
+    openInputPassword() {
+      this.$prompt("请输入支付密码（暂时默认123456）", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputType: 'password'
+      })
+        .then(({ value }) => {
+          if (value === "123456") {
+            this.okPay();
+          } else {
+            this.openPrompt()
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "支付已取消"
+          });
+        });
+    },
+    openPrompt() {
+        this.$alert('支付密码输入错误，请重试', '提示', {
+          confirmButtonText: '确定',
+        });
+    },
+    okPay() {
+      this.axios
+        .post(`/order/account`, {
+          _id: this.$route.params.orderId
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            alert("结算成功，跳转首页");
+            this.$router.push("/");
+          } else {
+            this.$message({
+              type: "warning",
+              message: result.data.data
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err, "++--+.++");
+          this.$router.push("/*");
+        });
+    }
+  },
+  mounted() {
+    const orderId = this.$route.params.orderId;
+    this.initOrder(orderId);
   }
 };
 </script>
@@ -112,7 +177,7 @@ export default {
     }
   }
 }
-.pay_order:hover .pay_order1{
+.pay_order:hover .pay_order1 {
   z-index: 0;
 }
 </style>
