@@ -103,6 +103,9 @@ export default {
       if(this.radio === undefined) {
         this.$refs.addressEdit.isShow('add')
       }
+      if(this.$store.state.car_manager.carInfo.length === 0) {
+        this.$router.push(`/cart`);
+      }
       this.axios
         .post("/order/set", {
           addressId: this.radio,
@@ -110,6 +113,7 @@ export default {
         })
         .then(result => {
           if (result.data.status === 1) {
+            this.$store.dispatch("changeAnsyc_select_goods", []);
             this.$router.push(`/pay_order/${result.data.data._id}`);
           } else {
             this.$message({

@@ -113,6 +113,10 @@ const router = new Router({
   ]
 });
 router.beforeEach((to, from, next) => {
+  if (!navigator.onLine) {
+    alert('网络未连接，请连接网络重试！')
+    return;
+  }
   if (to.meta.requireAuth) {
     axios.get('/user/check_login').then(result => {
       if (result.data.status === 1) {
