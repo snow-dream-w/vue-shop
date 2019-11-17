@@ -80,7 +80,7 @@ import EditAddress from "@/components/EditAddress.vue";
 export default {
   data() {
     return {
-      radio: "",
+      radio: undefined,
       addressList: [],
       // 用来展示
       goodsData: [],
@@ -100,6 +100,9 @@ export default {
      * 跳转订单路由
      */
     goPay() {
+      if(this.radio === undefined) {
+        this.$refs.addressEdit.isShow('add')
+      }
       this.axios
         .post("/order/set", {
           addressId: this.radio,

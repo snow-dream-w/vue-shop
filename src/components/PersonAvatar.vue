@@ -21,11 +21,10 @@ export default {
   },
   created(){
     let cookies = document.cookie.split(";");
-    let that = this;
     cookies.forEach(value => {
       if(value.indexOf("avatar=") !== -1){
         let avatar = value.split("=");
-        that.circleUrl = avatar[1];
+        this.circleUrl = avatar[1];
       }
     })
   }

@@ -35,11 +35,10 @@ export default {
   name: "HeaderNav",
   methods: {
     logout() {
-      let that = this
       this.axios.get("/user/logout").then(result => {
         if (result.data.status === 1) {
-          that.$store.dispatch("changeAnsyc_login_status",true);
-          that.$router.push("/");
+          this.$store.dispatch("changeAnsyc_login_status",true);
+          this.$router.push("/");
         } else {
           alert("注销失败，请重新尝试！")
         }

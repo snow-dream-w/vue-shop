@@ -92,23 +92,22 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.axios
             .post("/user/edit/info", {
-              name: that.ruleForm.name,
-              sex: that.ruleForm.sex
+              name: this.ruleForm.name,
+              sex: this.ruleForm.sex
             })
             .then(result => {
               if (result.data.status === 1) {
-                that.$message({
+                this.$message({
                   message: "修改成功！",
                   type: "success"
                 });
-                that.disabled = !that.disabled
+                this.disabled = !this.disabled
               } else {
-                that.$message.error("修改失败，请重新尝试！");
+                this.$message.error("修改失败，请重新尝试！");
               }
             });
         }
@@ -137,15 +136,14 @@ export default {
     changePassword
   },
   created() {
-    let that = this;
     this.axios.get("/user/person").then(result => {
       if(result.data.status === 0){
-        that.$router.push('/login_register/login');
+        this.$router.push('/login_register/login');
       }
-      that.ruleForm.telephone = result.data.data.telephone;
-      that.ruleForm.name = result.data.data.name;
-      that.ruleForm.sex = result.data.data.sex;
-      that.avatar = result.data.data.avatar;
+      this.ruleForm.telephone = result.data.data.telephone;
+      this.ruleForm.name = result.data.data.name;
+      this.ruleForm.sex = result.data.data.sex;
+      this.avatar = result.data.data.avatar;
     });
   }
 };

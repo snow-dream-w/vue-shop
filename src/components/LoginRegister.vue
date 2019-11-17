@@ -110,53 +110,50 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (that.choose === false) {
-            that.login();
+          if (this.choose === false) {
+            this.login();
           } else {
-            that.register();
+            this.register();
           }
         }
       });
     },
     register() {
-      let that = this;
       this.axios
         .post("/user/register", {
-          telephone: that.ruleForm.name,
-          password: that.ruleForm.pass,
-          sex: that.ruleForm.radio
+          telephone: this.ruleForm.name,
+          password: this.ruleForm.pass,
+          sex: this.ruleForm.radio
         })
         .then(result => {
           if (result.data.status === 0) {
-            that.point = result.data.data;
+            this.point = result.data.data;
           } else {
             this.$message({
               message: "恭喜你，注册成功！请登录...",
               type: "success"
             });
-            that.middle.name = result.data.data.name;
-            that.middle.pass = that.ruleForm.pass;
-            that.activeName = "login";
-            that.point = "";
+            this.middle.name = result.data.data.name;
+            this.middle.pass = this.ruleForm.pass;
+            this.activeName = "login";
+            this.point = "";
           }
         });
     },
     login() {
-      let that = this;
       this.axios
         .post("/user/login", {
-          telephone: that.ruleForm.name,
-          password: that.ruleForm.pass
+          telephone: this.ruleForm.name,
+          password: this.ruleForm.pass
         })
         .then(res => {
           if (res.data.status === 0) {
-            that.point = res.data.data;
+            this.point = res.data.data;
           } else {
-            that.$store.dispatch("changeAnsyc_login_status", false);
-            that.$router.push(that.fromPath);
+            this.$store.dispatch("changeAnsyc_login_status", false);
+            this.$router.push(this.fromPath);
           }
         });
     },

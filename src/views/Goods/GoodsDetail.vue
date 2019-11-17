@@ -143,7 +143,6 @@ export default {
       console.log("destroyHandler");
     },
     addCar() {
-      let that = this;
       this.axios
         .post("/car/add", {
           goodsId: this.goodsInfo._id,
@@ -151,20 +150,19 @@ export default {
         })
         .then(result => {
           if (result.data.status === 1) {
-            that.$notify({
+            this.$notify({
               title: "成功",
               message: "成功加入购物车",
               type: "success"
             });
           } else if (result.data.data == "未登录") {
-            that.$router.push("/login_register/login");
+            this.$router.push("/login_register/login");
           } else {
-            that.$router.push("*");
+            this.$router.push("*");
           }
         });
     },
     buyGoods() {
-      let that = this;
       this.axios
         .post("/car/add", {
           goodsId: this.goodsInfo._id,
@@ -172,31 +170,30 @@ export default {
         })
         .then(result => {
           if (result.data.status === 1) {
-            that.$router.push("/cart");
+            this.$router.push("/cart");
           } else if (result.data.data == "未登录") {
-            that.$router.push("/login_register/login");
+            this.$router.push("/login_register/login");
           } else {
-            that.$router.push("*");
+            this.$router.push("*");
           }
         });
     }
   },
   created() {
-    let that = this;
     this.axios
       .get("/goods/goodsDetail/" + this.$route.params.id)
       .then(result => {
         if (result.data.status === 1) {
-          that.goodsInfo = result.data.data;
+          this.goodsInfo = result.data.data;
           for (let index = 0; index < result.data.data.images.length; index++) {
             let obj = {
               id: index,
               w: 720,
               h: 400,
-              src: that.target_IP + result.data.data.images[index]
+              src: this.target_IP + result.data.data.images[index]
             };
             result.data.data.images[index] = obj;
-            that.list[index] = obj;
+            this.list[index] = obj;
           }
         } else {
           alert(404);

@@ -98,24 +98,23 @@ export default {
       this.$router.push("/choose_address");
     },
     open(_id) {
-      let that = this;
       this.$confirm("将该商品从购物车删除, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          that.axios.delete("/car/delete/" + _id).then(result => {
+          this.axios.delete("/car/delete/" + _id).then(result => {
             if (result.data.status === 1) {
-              for (let index in that.tableData) {
-                const element = that.tableData[index];
+              for (let index in this.tableData) {
+                const element = this.tableData[index];
                 if (element._id === _id) {
-                  that.tableData.splice(index, 1);
+                  this.tableData.splice(index, 1);
                   break;
                 }
               }
             } else{
-              that.$router.push('*')
+              this.$router.push('*')
             }
           });
         })
@@ -123,11 +122,10 @@ export default {
     }
   },
   created() {
-    let that = this;
     this.axios.get("/car/get").then(result => {
-      that.tableData = result.data.data;
-      for (let index = 0; index < that.tableData.length; index++) {
-        that.tableData[index]["id"] = index + 1;
+      this.tableData = result.data.data;
+      for (let index = 0; index < this.tableData.length; index++) {
+        this.tableData[index]["id"] = index + 1;
       }
     });
   }

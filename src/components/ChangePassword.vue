@@ -51,7 +51,7 @@
 <script>
 export default {
   data() {
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
       } else {
@@ -61,7 +61,7 @@ export default {
         callback();
       }
     };
-    var validatePass2 = (rule, value, callback) => {
+    const validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (value !== this.ruleForm.pass) {
@@ -85,24 +85,23 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          that.axios
+          this.axios
             .post("/user/edit/password", {
-              oldPassword: that.ruleForm.oldpass,
-              newPassword: that.ruleForm.pass
+              oldPassword: this.ruleForm.oldpass,
+              newPassword: this.ruleForm.pass
             })
             .then(result => {
               if (result.data.status === 1) {
-                that.$message({
+                this.$message({
                   message: "密码修改成功！",
                   type: "success"
                 });
               } else {
-                that.$message.error("密码修改失败，请重新尝试！");
+                this.$message.error("密码修改失败，请重新尝试！");
                 if (result.data.status === 0) {
-                  that.$router.push("/login_register/login");
+                  this.$router.push("/login_register/login");
                 }
               }
             });
