@@ -7,31 +7,61 @@
           <el-table :data="tableData" border id="table">
             <el-table-column label="商品" width="580">
               <template slot-scope="scope">
-                <el-table :data="scope.row.goods" border>
+                <el-table :data="scope.row.goodsInfo" border>
                   <el-table-column width="108">
                     <template slot-scope="scope">
-                      <img :src="scope.row.image" style="width: 80px;height: 80px;" />
+                      <img :src="scope.row.goodsId.images[0]" style="width: 80px;height: 80px;" />
                     </template>
                   </el-table-column>
-                  <el-table-column label="名称" prop="name" width="180"></el-table-column>
-                  <el-table-column label="单价" prop="price" width="90"></el-table-column>
+                  <el-table-column label="名称" prop="goodsId.name" width="180"></el-table-column>
+                  <el-table-column label="单价" prop="goodsId.price" width="90">
+                    <template slot-scope="scope">￥{{ scope.row.goodsId.price.toFixed(2) }}元</template>
+                  </el-table-column>
                   <el-table-column label="数量" prop="num" width="90"></el-table-column>
-                  <el-table-column label="单位" prop="danwei" width="90"></el-table-column>
+                  <el-table-column label="单位" prop="goodsId.unit" width="90"></el-table-column>
                 </el-table>
               </template>
             </el-table-column>
-            <el-table-column prop="money" label="实付款" width="85"></el-table-column>
-            <el-table-column prop="status" label="订单状态" width="100"></el-table-column>
+            <el-table-column label="实付款" width="85">
+              <template slot-scope="scope">￥{{ scope.row.total.toFixed(2) }}元</template>
+            </el-table-column>
+            <el-table-column prop="status" label="订单状态" width="100">
+              <template slot-scope="scope">
+                <ul>
+                  <li
+                    v-for="(value,index) in statusEnum"
+                    :key="index"
+                    v-if="scope.row.status==index"
+                  >{{ value }}</li>
+                </ul>
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="150" align="center">
               <template slot-scope="scope">
                 <el-button
-                  @click="handleClick(scope.row)"
+                  @click="orderDetails(scope.row)"
                   type="text"
                   size="small"
                   class="operate-menu"
                 >订单详情</el-button>
-                <el-button type="primary" size="small">确认发货</el-button>
-                <el-button type="text" size="small">取消订单</el-button>
+                <el-button
+                  v-if="scope.row.status === 1"
+                  type="primary"
+                  size="small"
+                  @click="goPay(scope.row._id)"
+                >去付款</el-button>
+                <el-button
+                  v-if="scope.row.status === 0 || scope.row.status === 4"
+                  type="danger"
+                  size="small"
+                >删除订单</el-button>
+                <br />
+                <el-button
+                  type="text"
+                  size="small"
+                  v-if="scope.row.status === 1"
+                  @click="confirmCancel(scope.row._id)"
+                >&nbsp;&nbsp;&nbsp;取消订单</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -44,58 +74,79 @@
 export default {
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          goods: [
-            {
-              id: 1,
-              image: require("@/assets/logo.png"),
-              name: "酸奶plus",
-              price: 10.5,
-              num: 1,
-              danwei: "件"
-            }
-          ],
-          money: "￥120.00",
-          status: "已付款"
-        },
-        {
-          id: 2,
-          goods: [
-            {
-              id: 1,
-              image: require("@/assets/logo.png"),
-              name: "酸奶plus",
-              price: 10.6,
-              num: 1,
-              danwei: "件"
-            },
-            {
-              id: 2,
-              image: require("@/assets/logo.png"),
-              name: "酸奶plus",
-              price: 10.7,
-              num: 1,
-              danwei: "件"
-            }
-          ],
-          money: "￥100.00",
-          status: "待付款"
-        }
-      ]
+      tableData: [],
+      statusEnum: ["已取消", "待付款", "待发货", "已发货", "已完成"]
     };
   },
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClick(row) {
-      this.$router.push('/order_detail/'+row.id)
+  watch: {
+    "$route.path"() {
+      const status = this.$route.params.status;
+      this.initOrder(status);
     }
+  },
+  methods: {
+    orderDetails(row) {
+      this.$router.push("/order_detail/" + row.id);
+    },
+    goPay(orderId) {
+      this.$router.push(`/pay_order/${orderId}`);
+    },
+    confirmCancel(orderId) {
+      this.$confirm("确认取消订单, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.cancelOrder(orderId);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
+    },
+    cancelOrder(orderId) {
+      this.axios
+        .post("/order/cancel", {
+          _id: orderId
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            this.$message({
+              type: "success",
+              message: "订单取消成功"
+            });
+            const status = this.$route.params.status;
+            this.initOrder(status);
+          } else {
+            this.$message.error("订单取消失败，请重新尝试！");
+          }
+        });
+    },
+    initOrder(status) {
+      let url = "";
+      if (status) {
+        url = `/order/orderInfo/${status}`;
+      } else {
+        url = `/order/orderInfo`;
+      }
+      this.axios.get(url).then(result => {
+        //成功取到数据
+        this.tableData = result.data.data;
+        //时间逆序排序
+        this.tableData.sort((a, b) => {
+          return (
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          );
+        });
+      });
+    }
+  },
+  created() {
+    const status = this.$route.params.status;
+    this.initOrder(status);
   }
 };
 </script>
@@ -125,7 +176,7 @@ export default {
 }
 </style>
 <style>
-  .operate-menu{
-    margin-left: 10px;
-  }
+.operate-menu {
+  margin-left: 10px;
+}
 </style>

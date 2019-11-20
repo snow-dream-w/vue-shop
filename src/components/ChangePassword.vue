@@ -98,6 +98,10 @@ export default {
                   message: "密码修改成功！",
                   type: "success"
                 });
+                this.disabled = false;
+                this.ruleForm.oldpass = ''
+                this.pass = ''
+                this.checkPass = ''
               } else {
                 this.$message.error("密码修改失败，请重新尝试！");
                 if (result.data.status === 0) {

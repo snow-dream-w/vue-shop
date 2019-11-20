@@ -46,7 +46,7 @@ const router = new Router({
       //二级路由
       children: [
         {
-          path: 'order',
+          path: 'order/:status?',
           name: 'order',
           component: Order,
           meta: {

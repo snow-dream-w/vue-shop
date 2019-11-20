@@ -13,12 +13,13 @@
         <el-tab-pane label="注册" name="register"></el-tab-pane>
       </el-tabs>
       <el-form-item label="手机号" prop="name">
-        <el-input v-model="ruleForm.name" placeholder="请输入11位手机号"></el-input>
+        <el-input v-model="ruleForm.name" placeholder="请输入11位手机号" v-on:input="changeValue"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="pass">
         <el-input
           type="password"
           v-model="ruleForm.pass"
+          v-on:input="changeValue"
           autocomplete="off"
           placeholder="请输入6-20位密码"
         ></el-input>
@@ -166,6 +167,9 @@ export default {
       } else {
         this.choose = true;
       }
+    },
+    changeValue(){
+      this.point = '';
     }
   },
   watch: {
@@ -244,8 +248,8 @@ export default {
       display: block;
       text-indent: 1em;
       color: red;
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 500;
     }
   }
 }

@@ -4,35 +4,35 @@
       <div class="per-content">
         <Menu ref="selection" :theme="theme" active-name="1" width="200" @on-select="clickHandle()">
           <MenuGroup title="订单管理">
-            <router-link :to="{name: 'order'}">
+            <router-link to="/person/order">
               <MenuItem name="1">
                 <i class="el-icon-date"></i>
                 全部订单
               </MenuItem>
             </router-link>
-            <router-link to="/person/order">
+            <router-link to="/person/order/1">
               <MenuItem name="2">
                 <i class="el-icon-wallet"></i>
                 待付款
               </MenuItem>
             </router-link>
-            <router-link to="/person/order">
+            <router-link to="/person/order/2">
               <MenuItem name="3">
                 <Icon type="ios-cube-outline" />待发货
               </MenuItem>
             </router-link>
-            <router-link to="/person/order">
+            <router-link to="/person/order/3">
               <MenuItem name="4">
                 <Icon type="ios-car-outline" />已发货
               </MenuItem>
             </router-link>
-            <router-link to="/person/order">
+            <router-link to="/person/order/4">
               <MenuItem name="5">
                 <i class="el-icon-check"></i>
                 已完成
               </MenuItem>
             </router-link>
-            <router-link to="/person/order">
+            <router-link to="/person/order/0">
               <MenuItem name="6">
                 <i class="el-icon-close"></i>
                 已取消
