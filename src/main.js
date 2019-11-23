@@ -10,7 +10,15 @@ import 'iview/dist/styles/iview.css';
 import PersonAvatar from '@/components/PersonAvatar.vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-axios.defaults.baseURL="http://localhost:3000";
+
+// 配置axios基础地址
+axios.defaults.baseURL = "http://localhost:3000";
+axios.interceptors.request.use((config) => {
+  config.withCredentials = true
+  return config
+}, (error) => {
+  return Promise.reject(error)
+})
 Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false;

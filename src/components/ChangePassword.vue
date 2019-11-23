@@ -98,15 +98,12 @@ export default {
                   message: "密码修改成功！",
                   type: "success"
                 });
-                this.disabled = false;
+                this.disabled = true;
                 this.ruleForm.oldpass = ''
-                this.pass = ''
-                this.checkPass = ''
+                this.ruleForm.pass = ''
+                this.ruleForm.checkPass = ''
               } else {
-                this.$message.error("密码修改失败，请重新尝试！");
-                if (result.data.status === 0) {
-                  this.$router.push("/login_register/login");
-                }
+                this.$message.error(result.data.data);
               }
             });
         }

@@ -7,30 +7,46 @@
           <div class="address">
             收货信息：
             <span>
-              <span>17865579761</span>
-              <span>&emsp;吾忆那年秋</span>
+              <span>{{ tableData[0]&&tableData[0].telephone }}</span>
+              <span>&emsp;{{ tableData[0]&&tableData[0].name }}</span>
               <br />
-              <span>&emsp;&emsp;&emsp;&emsp;&emsp;山东省 烟台市 莱山区 山东工商学院</span>
+              <span>&emsp;&emsp;&emsp;&emsp;&emsp;{{ tableData[0]&&tableData[0].address.area.join(' ')}} {{ tableData[0]&&tableData[0].address.details }}</span>
             </span>
           </div>
           <hr />
           <div class="orderInfo">
             <span>订单金额：</span>
-            <span class="name" style="color:red;">￥316.00</span>
+            <span class="name" style="color:red;">{{ tableData[0]&&tableData[0].total.toFixed(2) }}</span>
             <br />
             <span>订单编号：</span>
-            <span class="name">11905251257461370</span>
+            <span class="name">{{ tableData[0]&&tableData[0]._id }}</span>
             <br />
             <span>下单时间：</span>
-            <span class="name">2019-8-25 12:57:46</span>
+            <span class="name">{{ tableData[0]&&tableData[0].updatedAt | formatDate('') }}</span>
           </div>
         </div>
         <div class="status">
-            <span style="lineHeight: 40px;">订单状态：买家已经提交订单，等待付款~</span>
-            <div>您可以：
-                <el-button type="primary" size="small">去付款</el-button>&emsp;
-                <el-link type="primary">取消订单</el-link>
-            </div>
+          <span style="lineHeight: 40px;">订单状态：{{ tableData[0]&&statusEnum[tableData[0].status] }}</span>
+          <div>
+            您可以：
+            <el-button v-if="tableData[0]&&tableData[0].status===1" type="primary" size="small" @click="">去付款</el-button>
+            <el-button v-if="tableData[0]&&tableData[0].status===1" type="text" size="small">取消订单</el-button>
+            <el-button
+              v-if="tableData[0]&&tableData[0].status===2"
+              type="primary"
+              size="small"
+            >提醒商家发货</el-button>
+            <el-button
+              v-if="tableData[0]&&tableData[0].status===3"
+              type="text"
+              size="small"
+            >查看物流(暂不可用)</el-button>
+            <el-button
+              v-if="tableData[0]&&(tableData[0].status===0||tableData[0].status==4)"
+              type="danger"
+              size="small"
+            >删除订单</el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -39,21 +55,34 @@
       <el-table :data="tableData" border style="width: 100%" id="table">
         <el-table-column label="商品" width="879">
           <template slot-scope="scope">
-            <el-table :data="scope.row.goods" border style="width: 100%">
+            <el-table :data="scope.row.goodsInfo" border style="width: 100%">
               <el-table-column width="120">
                 <template slot-scope="scope">
-                  <img :src="scope.row.image" style="width: 100px;height: 100px;" />
+                  <img :src="scope.row.goodsId.images[0]" style="width: 100px;height: 100px;" />
                 </template>
               </el-table-column>
-              <el-table-column label="名称" prop="name" width="255"></el-table-column>
-              <el-table-column label="单价" prop="price" width="160"></el-table-column>
-              <el-table-column label="数量" prop="num" width="160"></el-table-column>
-              <el-table-column label="单位" prop="danwei" width="160"></el-table-column>
+              <el-table-column label="名称" prop="goodsId.name" width="180"></el-table-column>
+              <el-table-column label="单价" width="140">
+                <template slot-scope="scope">{{ scope.row.goodsId.price.toFixed(2) }}</template>
+              </el-table-column>
+              <el-table-column label="数量" prop="num" width="140"></el-table-column>
+              <el-table-column label="单位" prop="goodsId.unit" width="140"></el-table-column>
+              <el-table-column label="操作" width="135">
+                <template slot-scope="scope">
+                  <el-button v-if="scope.row.status === 2" type="primary" size="small">评价商品</el-button>
+                  <el-button v-if="scope.row.status === 3" type="primary" size="small">追评</el-button>
+                  <el-button v-if="scope.row.status === 4" type="text" size="small">修改评论(暂不可用)</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column prop="money" label="实付款" width="120"></el-table-column>
-        <el-table-column prop="status" label="订单状态" width="120"></el-table-column>
+        <el-table-column label="实付款" width="120">
+          <template slot-scope="scope">{{ scope.row.total.toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column label="订单状态" width="125">
+          <template slot-scope="scope">{{ statusEnum[scope.row.status] }}</template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -63,35 +92,49 @@
 export default {
   data() {
     return {
-      tableData: [
-        {
-          id: 2,
-          goods: [
-            {
-              id: 1,
-              image: require("@/assets/logo.png"),
-              name: "酸奶plus",
-              price: 10.6,
-              num: 1,
-              danwei: "件"
-            },
-            {
-              id: 2,
-              image: require("@/assets/logo.png"),
-              name: "酸奶plus",
-              price: 10.7,
-              num: 1,
-              danwei: "件"
-            }
-          ],
-          money: "￥100.00",
-          status: "待付款"
-        }
-      ]
+      tableData: [],
+      statusEnum: ["已取消", "待付款", "待发货", "已发货", "已完成"]
     };
   },
+  filters: {
+    formatDate(dates) {
+      const times = new Date(dates);
+      const year = times.getFullYear();
+      const month = times.getMonth() + 1;
+      const date = times.getDate();
+      const hour = times.getHours();
+      const minute = times.getMinutes();
+      const second = times.getSeconds();
+      return (
+        year +
+        "-" +
+        month +
+        "-" +
+        date +
+        " " +
+        hour +
+        ":" +
+        minute +
+        ":" +
+        second
+      );
+    }
+  },
+  methods: {
+    initOrder(orderId) {
+      this.axios.get(`/order/get/${orderId}`).then(result => {
+        if (result.data.status === 1) {
+          //成功取得数据，准备交互
+          this.tableData.push(result.data.data);
+        } else {
+          this.$router.push("/*");
+        }
+      });
+    }
+  },
   created() {
-    console.log(this.$route.params.id);
+    const orderId = this.$route.params.id;
+    this.initOrder(orderId);
   }
 };
 </script>
@@ -135,12 +178,12 @@ export default {
         }
       }
     }
-    .status{
-        float: left;
-        padding: 30px;
-        width: 49.2%;
-        height: 240px;
-        border: 1px solid #ddd;
+    .status {
+      float: left;
+      padding: 30px;
+      width: 627px;
+      height: 240px;
+      border: 1px solid #ddd;
     }
   }
 }

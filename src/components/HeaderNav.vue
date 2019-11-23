@@ -40,7 +40,7 @@ export default {
           this.$store.dispatch("changeAnsyc_login_status",true);
           this.$router.push("/");
         } else {
-          alert("注销失败，请重新尝试！")
+          this.$router.push('/login_register/login')
         }
       });
     }

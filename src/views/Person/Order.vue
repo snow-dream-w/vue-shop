@@ -39,7 +39,7 @@
             <el-table-column fixed="right" label="操作" width="150" align="center">
               <template slot-scope="scope">
                 <el-button
-                  @click="orderDetails(scope.row)"
+                  @click="orderDetails(scope.row._id)"
                   type="text"
                   size="small"
                   class="operate-menu"
@@ -54,8 +54,15 @@
                   v-if="scope.row.status === 0 || scope.row.status === 4"
                   type="danger"
                   size="small"
+                  @click="confirmDelete(scope.row._id)"
                 >删除订单</el-button>
                 <br />
+                <el-button
+                  type="text"
+                  size="small"
+                  v-if="scope.row.status === 4"
+                  @click="orderDetails(scope.row._id)"
+                >&nbsp;&nbsp;&nbsp;评价商品</el-button>
                 <el-button
                   type="text"
                   size="small"
@@ -85,8 +92,8 @@ export default {
     }
   },
   methods: {
-    orderDetails(row) {
-      this.$router.push("/order_detail/" + row.id);
+    orderDetails(orderId) {
+      this.$router.push("/order_detail/" + orderId);
     },
     goPay(orderId) {
       this.$router.push(`/pay_order/${orderId}`);
@@ -99,6 +106,22 @@ export default {
       })
         .then(() => {
           this.cancelOrder(orderId);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
+    },
+    confirmDelete(orderId) {
+      this.$confirm("删除订单不可恢复, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deleteOrder(orderId);
         })
         .catch(() => {
           this.$message({
@@ -122,6 +145,22 @@ export default {
             this.initOrder(status);
           } else {
             this.$message.error("订单取消失败，请重新尝试！");
+          }
+        });
+    },
+    deleteOrder(orderId) {
+      this.axios
+        .delete(`/order/delete/${orderId}`)
+        .then(result => {
+          if (result.data.status === 1) {
+            this.$message({
+              type: "success",
+              message: "订单删除成功"
+            });
+            const status = this.$route.params.status;
+            this.initOrder(status);
+          } else {
+            this.$message.error("订单删除失败，请重新尝试！");
           }
         });
     },

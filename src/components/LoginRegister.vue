@@ -13,13 +13,14 @@
         <el-tab-pane label="注册" name="register"></el-tab-pane>
       </el-tabs>
       <el-form-item label="手机号" prop="name">
-        <el-input v-model="ruleForm.name" placeholder="请输入11位手机号" v-on:input="changeValue"></el-input>
+        <el-input v-model="ruleForm.name" placeholder="请输入11位手机号" v-on:input="changeValue('name')"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="pass">
         <el-input
           type="password"
           v-model="ruleForm.pass"
-          v-on:input="changeValue"
+          v-on:input="changeValue('pass')"
+          @keyup.enter.native="submitForm('ruleForm')"
           autocomplete="off"
           placeholder="请输入6-20位密码"
         ></el-input>
@@ -38,11 +39,11 @@
           <el-radio v-model="ruleForm.radio" label="女">女</el-radio>
         </template>
       </div>
+      <span class="point">{{ point }}</span>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
-      <span class="point">{{ point }}</span>
     </el-form>
   </div>
 </template>
@@ -51,7 +52,7 @@ import { async } from "q";
 export default {
   name: "LoginRegister",
   data() {
-    var checkAge = (rule, value, callback) => {
+    let checkAge = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("手机号不能为空!"));
       }
@@ -67,7 +68,7 @@ export default {
         }
       }, 1000);
     };
-    var validatePass = (rule, value, callback) => {
+    let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码！"));
       } else {
@@ -77,7 +78,7 @@ export default {
         callback();
       }
     };
-    var validatePass2 = (rule, value, callback) => {
+    let validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (value !== this.ruleForm.pass) {
@@ -151,6 +152,7 @@ export default {
         })
         .then(res => {
           if (res.data.status === 0) {
+            console.log(res.data.data)
             this.point = res.data.data;
           } else {
             this.$store.dispatch("changeAnsyc_login_status", false);
@@ -162,14 +164,16 @@ export default {
       this.$refs[formName].resetFields();
     },
     handleClick(tab, event) {
+      this.$refs["ruleForm"].clearValidate();
       if (tab.name === "login") {
         this.choose = false;
       } else {
         this.choose = true;
       }
     },
-    changeValue(){
-      this.point = '';
+    changeValue(prop) {
+      this.point = "";
+      this.$refs["ruleForm"].clearValidate(prop);//prop是表单的prop值
     }
   },
   watch: {
@@ -216,7 +220,7 @@ export default {
           message: "已登录，请勿重复登录!",
           type: "warning"
         });
-        this.$router.go(-1)
+        this.$router.go(-1);
       }
     }
   }
@@ -246,7 +250,7 @@ export default {
     }
     .point {
       display: block;
-      text-indent: 1em;
+      text-indent: 4em;
       color: red;
       font-size: 14px;
       font-weight: 500;

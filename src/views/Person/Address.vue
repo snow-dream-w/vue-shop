@@ -74,10 +74,30 @@ export default {
         });
     },
     handleDelete(_id) {
+      this.$confirm("此操作将永久删除该地址, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.addressDelete(_id)
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除操作"
+          });
+        });
+    },
+    addressDelete(_id) {
       this.axios
         .delete("/address/delete/" + _id)
         .then(result => {
           if (result.data.status === 1) {
+            this.$message({
+              type: "success",
+              message: "地址删除成功!"
+            });
             this.init();
           } else {
             this.$message({
@@ -105,6 +125,13 @@ export default {
               }
             });
             this.tableData = result.data.data;
+            //时间逆序排序
+            this.tableData.sort((a, b) => {
+              return (
+                new Date(b.updatedAt).getTime() -
+                new Date(a.updatedAt).getTime()
+              );
+            });
           } else {
             this.$message.error("数据请求失败，请刷新重新尝试");
           }
