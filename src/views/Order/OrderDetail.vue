@@ -29,12 +29,23 @@
           <span style="lineHeight: 40px;">订单状态：{{ tableData[0]&&statusEnum[tableData[0].status] }}</span>
           <div>
             您可以：
-            <el-button v-if="tableData[0]&&tableData[0].status===1" type="primary" size="small" @click="">去付款</el-button>
-            <el-button v-if="tableData[0]&&tableData[0].status===1" type="text" size="small">取消订单</el-button>
+            <el-button
+              v-if="tableData[0]&&tableData[0].status===1"
+              type="primary"
+              size="small"
+              @click="goPay(tableData[0]._id)"
+            >去付款</el-button>
+            <el-button
+              v-if="tableData[0]&&tableData[0].status===1"
+              type="text"
+              size="small"
+              @click="confirmCancel(tableData[0]._id)"
+            >取消订单</el-button>
             <el-button
               v-if="tableData[0]&&tableData[0].status===2"
               type="primary"
               size="small"
+              @click="$message({type: 'success',message: '提醒商家成功！'})"
             >提醒商家发货</el-button>
             <el-button
               v-if="tableData[0]&&tableData[0].status===3"
@@ -45,6 +56,7 @@
               v-if="tableData[0]&&(tableData[0].status===0||tableData[0].status==4)"
               type="danger"
               size="small"
+              @click="confirmDelete(tableData[0]._id)"
             >删除订单</el-button>
           </div>
         </div>
@@ -58,7 +70,10 @@
             <el-table :data="scope.row.goodsInfo" border style="width: 100%">
               <el-table-column width="120">
                 <template slot-scope="scope">
-                  <img :src="scope.row.goodsId.images[0]" style="width: 100px;height: 100px;" />
+                  <img
+                    :src="staticBaseUrl + scope.row.goodsId.images[0]"
+                    style="width: 100px;height: 100px;"
+                  />
                 </template>
               </el-table-column>
               <el-table-column label="名称" prop="goodsId.name" width="180"></el-table-column>
@@ -69,9 +84,9 @@
               <el-table-column label="单位" prop="goodsId.unit" width="140"></el-table-column>
               <el-table-column label="操作" width="135">
                 <template slot-scope="scope">
-                  <el-button v-if="scope.row.status === 2" type="primary" size="small">评价商品</el-button>
-                  <el-button v-if="scope.row.status === 3" type="primary" size="small">追评</el-button>
-                  <el-button v-if="scope.row.status === 4" type="text" size="small">修改评论(暂不可用)</el-button>
+                  <el-button v-if="scope.row.status === 2&&tableData[0]&&tableData[0].status===4" type="primary" size="small">评价商品</el-button>
+                  <el-button v-if="scope.row.status === 3&&tableData[0]&&tableData[0].status===4" type="primary" size="small">追评</el-button>
+                  <el-button v-if="scope.row.status === 4&&tableData[0]&&tableData[0].status===4" type="text" size="small">修改评论(暂不可用)</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -121,6 +136,71 @@ export default {
     }
   },
   methods: {
+    goPay(orderId) {
+      this.$router.push(`/pay_order/${orderId}`);
+    },
+    confirmCancel(orderId) {
+      this.$confirm("确认取消订单, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.cancelOrder(orderId);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
+    },
+    confirmDelete(orderId) {
+      this.$confirm("删除订单不可恢复, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deleteOrder(orderId);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
+    },
+    cancelOrder(orderId) {
+      this.axios
+        .post("/order/cancel", {
+          _id: orderId
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            this.$message({
+              type: "success",
+              message: "订单取消成功"
+            });
+            this.tableData[0].status = 0;
+          } else {
+            this.$message.error("订单取消失败，请重新尝试！");
+          }
+        });
+    },
+    deleteOrder(orderId) {
+      this.axios.delete(`/order/delete/${orderId}`).then(result => {
+        if (result.data.status === 1) {
+          this.$message({
+            type: "success",
+            message: "订单删除成功"
+          });
+          this.$router.push("/person/order");
+        } else {
+          this.$message.error("订单删除失败，请重新尝试！");
+        }
+      });
+    },
     initOrder(orderId) {
       this.axios.get(`/order/get/${orderId}`).then(result => {
         if (result.data.status === 1) {

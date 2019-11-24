@@ -7,7 +7,7 @@
             <div class="block">
               <el-carousel trigger="click" direction="vertical" height="450px">
                 <el-carousel-item v-for="item in goodsInfo.images" :key="item._id">
-                  <img :src="item.src" />
+                  <img :src="staticBaseUrl + item.src" />
                 </el-carousel-item>
               </el-carousel>
               <vue-preview
@@ -25,7 +25,7 @@
                 <el-tab-pane :label="'评论数量'+goodsInfo.commentNum">
                   <ul>
                     <li v-for="item in comments" :key="item.id">
-                      <img :src="item.image" width="30" />
+                      <img :src="staticBaseUrl + item.image" width="30" />
                       <span>{{ item.name }}</span>
                       <span class="date">2018-08-01</span>
                       <span class="delBtn">删除</span>

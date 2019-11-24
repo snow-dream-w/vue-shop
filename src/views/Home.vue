@@ -2,7 +2,7 @@
   <div class="home clearfix">
     <ul>
       <li v-for="item in list" :key="item.id" @click="handleGoodsInfo(item._id)">
-        <img :src="item.images[0]" />
+        <img :src="staticBaseUrl + item.images[0]" />
         <p>{{ item.name }}</p>
         <div class="bottom">
           <span class="money">{{ item.price | money }}</span>

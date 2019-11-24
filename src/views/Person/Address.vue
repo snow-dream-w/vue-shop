@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="address">
-          <el-table :data="tableData" border>
+          <el-table v-loading="loading" :data="tableData" border>
             <el-table-column prop="name" label="收货人" width="80"></el-table-column>
             <el-table-column prop="telephone" label="联系方式" width="120"></el-table-column>
             <el-table-column prop="address.area" label="地区" width="170"></el-table-column>
@@ -45,7 +45,8 @@ import EditAddress from "@/components/EditAddress.vue";
 export default {
   data() {
     return {
-      tableData: []
+      tableData: [],
+      loading: true
     };
   },
   methods: {
@@ -135,6 +136,7 @@ export default {
           } else {
             this.$message.error("数据请求失败，请刷新重新尝试");
           }
+          this.loading = false
         })
         .catch(err => {
           this.$router.push("/*");

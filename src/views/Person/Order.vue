@@ -4,13 +4,16 @@
       <div class="content">
         <person-avatar />
         <div class="order">
-          <el-table :data="tableData" border id="table">
+          <el-table :data="tableData" border v-loading="loading" id="table">
             <el-table-column label="商品" width="580">
               <template slot-scope="scope">
                 <el-table :data="scope.row.goodsInfo" border>
                   <el-table-column width="108">
                     <template slot-scope="scope">
-                      <img :src="scope.row.goodsId.images[0]" style="width: 80px;height: 80px;" />
+                      <img
+                        :src="staticBaseUrl + scope.row.goodsId.images[0]"
+                        style="width: 80px;height: 80px;"
+                      />
                     </template>
                   </el-table-column>
                   <el-table-column label="名称" prop="goodsId.name" width="180"></el-table-column>
@@ -44,6 +47,12 @@
                   size="small"
                   class="operate-menu"
                 >订单详情</el-button>
+                <el-button
+                  v-if="scope.row.status === 2"
+                  type="primary"
+                  size="small"
+                  @click="$message({type: 'success',message: '提醒商家成功！'})"
+                >提醒发货</el-button>
                 <el-button
                   v-if="scope.row.status === 1"
                   type="primary"
@@ -82,7 +91,8 @@ export default {
   data() {
     return {
       tableData: [],
-      statusEnum: ["已取消", "待付款", "待发货", "已发货", "已完成"]
+      statusEnum: ["已取消", "待付款", "待发货", "已发货", "已完成"],
+      loading: true
     };
   },
   watch: {
@@ -149,22 +159,21 @@ export default {
         });
     },
     deleteOrder(orderId) {
-      this.axios
-        .delete(`/order/delete/${orderId}`)
-        .then(result => {
-          if (result.data.status === 1) {
-            this.$message({
-              type: "success",
-              message: "订单删除成功"
-            });
-            const status = this.$route.params.status;
-            this.initOrder(status);
-          } else {
-            this.$message.error("订单删除失败，请重新尝试！");
-          }
-        });
+      this.axios.delete(`/order/delete/${orderId}`).then(result => {
+        if (result.data.status === 1) {
+          this.$message({
+            type: "success",
+            message: "订单删除成功"
+          });
+          const status = this.$route.params.status;
+          this.initOrder(status);
+        } else {
+          this.$message.error("订单删除失败，请重新尝试！");
+        }
+      });
     },
-    initOrder(status) {
+    initOrder() {
+      const status = this.$route.params.status;
       let url = "";
       if (status) {
         url = `/order/orderInfo/${status}`;
@@ -180,12 +189,12 @@ export default {
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
           );
         });
+        this.loading = false;
       });
     }
   },
   created() {
-    const status = this.$route.params.status;
-    this.initOrder(status);
+    this.initOrder();
   }
 };
 </script>

@@ -5,6 +5,7 @@
     <el-divider class="divider"></el-divider>
     <div class="tables">
       <el-table
+        v-loading="loading"
         ref="multipleTable"
         :data="tableData"
         tooltip-effect="dark"
@@ -14,7 +15,7 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="图片" width="140">
           <template slot-scope="scope">
-            <img :src="scope.row.goodsId.images[0]" width="50px" />
+            <img :src="staticBaseUrl + scope.row.goodsId.images[0]" width="50px" />
           </template>
         </el-table-column>
         <el-table-column prop="goodsId.name" label="名称" width="160"></el-table-column>
@@ -65,7 +66,8 @@ export default {
       tableData: [],
       multipleSelection: [],
       tatal: 0,
-      dialogVisible: false
+      dialogVisible: false,
+      loading: true
     };
   },
   methods: {
@@ -127,6 +129,7 @@ export default {
       for (let index = 0; index < this.tableData.length; index++) {
         this.tableData[index]["id"] = index + 1;
       }
+      this.loading = false
     });
   }
 };

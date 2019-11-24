@@ -4,7 +4,7 @@
       <div class="demo-basic--circle">
         <div class="block">
           <router-link :to="{name: 'edit'}">
-            <el-avatar :size="50" :src="circleUrl"></el-avatar>
+            <el-avatar :size="50" :src="staticBaseUrl + circleUrl"></el-avatar>
           </router-link>
         </div>
       </div>
