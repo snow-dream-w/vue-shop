@@ -7,7 +7,7 @@
             <div class="block">
               <el-carousel trigger="click" direction="vertical" height="450px">
                 <el-carousel-item v-for="item in goodsInfo.images" :key="item._id">
-                  <img :src="staticBaseUrl + item.src" />
+                  <img :src="item.src" />
                 </el-carousel-item>
               </el-carousel>
               <vue-preview
@@ -190,7 +190,7 @@ export default {
               id: index,
               w: 720,
               h: 400,
-              src: this.target_IP + result.data.data.images[index]
+              src: this.staticBaseUrl + result.data.data.images[index]
             };
             result.data.data.images[index] = obj;
             this.list[index] = obj;
