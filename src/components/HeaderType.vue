@@ -246,6 +246,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 #type {
+  font-family: "PingFang SC";
   min-width: 1140px;
   height: 40px;
   background: rgb(10, 157, 241);
@@ -268,10 +269,10 @@ export default {
           line-height: 40px;
           font-size: 15px;
           color: #000;
-          font-weight: 500;
-          border-bottom: 1px solid #ddd;
-          border-left: 1px solid #ddd;
-          border-right: 1px solid #ddd;
+          font-weight: 600;
+          border-bottom: 1px solid #e2e2e2;
+          border-left: 1px solid #e2e2e2;
+          border-right: 1px solid #e2e2e2;
         }
         .first {
           height: 41px;
@@ -294,8 +295,9 @@ export default {
           padding-right: 40px;
           line-height: 50px;
           background: #fff;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 500;
+          font-family: "微软雅黑";
           box-sizing: border-box;
           i {
             position: absolute;
@@ -306,11 +308,12 @@ export default {
             display: none;
             position: absolute;
             width: 300px;
-            padding: 20px 40px;
+            padding: 14px 40px;
             left: 198px;
             top: 0;
-            box-shadow: 2px 0 2px #d4d3d3, -2px 0 2px #d4d3d3, 0 2px 2px #d4d3d3,
-              0 -2px 2px #d4d3d3;
+            // box-shadow: 2px 0 2px #d4d3d3, -2px 0 2px #d4d3d3, 0 2px 2px #d4d3d3,
+            //   0 -2px 2px #d4d3d3;
+            border: 3px solid #19a6f1;
             background: #fff;
             .second-menu {
               float: left;
@@ -327,7 +330,7 @@ export default {
           }
         }
         .first-menu-bg {
-          background: rgb(131, 204, 247);
+          background: #19a6f1;
         }
       }
     }

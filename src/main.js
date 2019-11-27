@@ -28,9 +28,6 @@ Vue.use(ElementUI);
 import VuePreview from 'vue2-preview'
 Vue.use(VuePreview)
 
-//挂载地址,仅测试用，打包前设为空
-Vue.prototype.staticBaseUrl = "http://localhost:3000"
-
 import { Menu, MenuGroup, Icon, MenuItem, RadioGroup, Radio } from 'iview';
 //iview组件
 Vue.component('Menu', Menu);

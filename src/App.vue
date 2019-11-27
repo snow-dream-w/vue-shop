@@ -49,6 +49,7 @@ export default {
     }
     margin: 0 auto;
     width: 1140px;
+    min-height: 400px
   }
   footer {
     width: 100%;

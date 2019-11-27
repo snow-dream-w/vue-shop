@@ -4,7 +4,7 @@
       <div class="content">
         <el-upload
           class="avatar-uploader"
-          :action="staticBaseUrl + '/user/upload'"
+          :action="axios.defaults.baseURL + '/user/upload'"
           :with-credentials="true"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
@@ -144,7 +144,7 @@ export default {
       this.ruleForm.telephone = result.data.data.telephone;
       this.ruleForm.name = result.data.data.name;
       this.ruleForm.sex = result.data.data.sex;
-      this.avatar = this.staticBaseUrl + result.data.data.avatar;
+      this.avatar = this.axios.defaults.baseURL + result.data.data.avatar;
     });
   }
 };

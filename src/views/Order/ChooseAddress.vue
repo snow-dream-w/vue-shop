@@ -42,7 +42,7 @@
           <el-table ref="multipleTable" :data="goodsData" tooltip-effect="dark" style="width: 100%">
             <el-table-column label="图片" width="150">
               <template slot-scope="scope">
-                <img :src="staticBaseUrl + scope.row.goodsId.images[0]" width="50px" />
+                <img :src="axios.defaults.baseURL + scope.row.goodsId.images[0]" width="50px" />
               </template>
             </el-table-column>
             <el-table-column prop="goodsId.name" label="名称" width="340"></el-table-column>

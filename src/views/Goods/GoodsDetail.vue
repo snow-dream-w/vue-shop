@@ -25,7 +25,7 @@
                 <el-tab-pane :label="'评论数量'+goodsInfo.commentNum">
                   <ul>
                     <li v-for="item in comments" :key="item.id">
-                      <img :src="staticBaseUrl + item.image" width="30" />
+                      <img :src="axios.defaults.baseURL + item.image" width="30" />
                       <span>{{ item.name }}</span>
                       <span class="date">2018-08-01</span>
                       <span class="delBtn">删除</span>
@@ -190,7 +190,7 @@ export default {
               id: index,
               w: 720,
               h: 400,
-              src: this.staticBaseUrl + result.data.data.images[index]
+              src: this.axios.defaults.baseURL + result.data.data.images[index]
             };
             result.data.data.images[index] = obj;
             this.list[index] = obj;

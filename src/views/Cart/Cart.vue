@@ -15,7 +15,7 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="图片" width="140">
           <template slot-scope="scope">
-            <img :src="staticBaseUrl + scope.row.goodsId.images[0]" width="50px" />
+            <img :src="axios.defaults.baseURL + scope.row.goodsId.images[0]" width="50px" />
           </template>
         </el-table-column>
         <el-table-column prop="goodsId.name" label="名称" width="160"></el-table-column>

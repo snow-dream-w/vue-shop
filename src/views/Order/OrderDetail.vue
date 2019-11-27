@@ -71,7 +71,7 @@
               <el-table-column width="120">
                 <template slot-scope="scope">
                   <img
-                    :src="staticBaseUrl + scope.row.goodsId.images[0]"
+                    :src="axios.defaults.baseURL + scope.row.goodsId.images[0]"
                     style="width: 100px;height: 100px;"
                   />
                 </template>

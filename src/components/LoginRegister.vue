@@ -152,7 +152,7 @@ export default {
         })
         .then(res => {
           if (res.data.status === 0) {
-            console.log(res.data.data)
+            console.log(res.data.data);
             this.point = res.data.data;
           } else {
             this.$store.dispatch("changeAnsyc_login_status", false);
@@ -173,7 +173,7 @@ export default {
     },
     changeValue(prop) {
       this.point = "";
-      this.$refs["ruleForm"].clearValidate(prop);//prop是表单的prop值
+      this.$refs["ruleForm"].clearValidate(prop); //prop是表单的prop值
     }
   },
   watch: {
