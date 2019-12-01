@@ -1,14 +1,15 @@
 <template>
   <div class="home clearfix">
     <ul>
-      <li v-for="item in list" :key="item.id" @click="handleGoodsInfo(item._id)">
+      <!-- <li v-for="item in list" :key="item.id" @click="handleGoodsInfo(item._id)">
         <img :src="axios.defaults.baseURL + item.images[0]" />
         <p>{{ item.name }}</p>
         <div class="bottom">
           <span class="money">{{ item.price | money }}</span>
           <span v-cloak class="num">{{ item.sales }}人付款</span>
         </div>
-      </li>
+      </li>-->
+      <GoodsCard v-for="item in list" :key="item.id" :item="item" />
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"
@@ -26,6 +27,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import GoodsCard from "@/components/GoodsCard";
 export default {
   name: "home",
   data() {
@@ -61,9 +63,9 @@ export default {
           }
         });
     },
-    handleGoodsInfo(id) {
-      this.$router.replace("/goods/" + id);
-    },
+    // handleGoodsInfo(id) {
+    //   this.$router.replace("/goods/" + id);
+    // },
     init(goods_type) {
       this.axios
         .get("/goods/query", {
@@ -81,16 +83,55 @@ export default {
             alert(404);
           }
         });
+    },
+    getRecommend() {
+      this.axios.get("/goods/recommend/user").then(result => {
+        if (result.data.status === 1) {
+          this.list = result.data.data;
+          this.total = result.data.count;
+        } else {
+          this.$message.error("暂无推荐商品");
+        }
+      });
+    },
+    referGoods(menu) {
+      switch (menu) {
+        case "home":
+          this.init();
+          break;
+        case "recommend":
+          this.getRecommend();
+          break;
+        case "new":
+          this.$message({
+            type: "warning",
+            message: "此功能暂不可用"
+          });
+          break;
+        case "hot":
+          this.$message({
+            type: "warning",
+            message: "此功能暂不可用"
+          });
+          break;
+        case "precent":
+          this.$message({
+            type: "warning",
+            message: "此功能暂不可用"
+          });
+          break;
+      }
     }
   },
   watch: {
     goods_type: function(newVal, oldVal) {
-      this.init(newVal)
-    }
-  },
-  filters: {
-    money(data) {
-      return "￥" + data.toFixed(2);
+      if(newVal){
+        this.init(newVal);
+      }
+    },
+    "$route.query.menu"(newVal, oldVal) {
+      this.$store.dispatch("changeAnsyc_goods_type", "");
+      this.referGoods(newVal)
     }
   },
   computed: {
@@ -98,8 +139,15 @@ export default {
       goods_type: "goods_type"
     })
   },
+  components: {
+    GoodsCard
+  },
   created() {
-    this.init(this.goods_type);
+    if(this.$route.query.menu){
+      this.referGoods(this.$route.query.menu)
+    } else {
+      this.init(this.goods_type);
+    }
   }
 };
 </script>
@@ -110,39 +158,6 @@ export default {
   ul {
     float: right;
     width: 940px;
-    li {
-      float: left;
-      margin: 10px 1%;
-      width: 23%;
-      height: 300px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      cursor: pointer;
-      img {
-        padding: 1px;
-        width: 100%;
-        height: 72%;
-        background: rgb(204, 225, 233);
-      }
-      p {
-        margin: 5px auto 5px 10px;
-        line-height: 50px;
-      }
-      .bottom {
-        width: 100%;
-        padding: 0 10px;
-        box-sizing: border-box;
-        .money {
-          display: block;
-          float: left;
-          color: red;
-        }
-        .num {
-          display: block;
-          float: right;
-        }
-      }
-    }
     .block {
       float: right;
       margin-top: 10px;

@@ -13,7 +13,12 @@
         <el-tab-pane label="注册" name="register"></el-tab-pane>
       </el-tabs>
       <el-form-item label="手机号" prop="name">
-        <el-input v-model="ruleForm.name" placeholder="请输入11位手机号" v-on:input="changeValue('name')"></el-input>
+        <el-input
+          v-model="ruleForm.name"
+          placeholder="请输入11位手机号"
+          prefix-icon="el-icon-user"
+          v-on:input="changeValue('name')"
+        ></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="pass">
         <el-input
@@ -22,6 +27,7 @@
           v-on:input="changeValue('pass')"
           @keyup.enter.native="submitForm('ruleForm')"
           autocomplete="off"
+          prefix-icon="el-icon-lock"
           placeholder="请输入6-20位密码"
         ></el-input>
       </el-form-item>
@@ -30,6 +36,7 @@
           type="password"
           v-model="ruleForm.checkPass"
           autocomplete="off"
+          prefix-icon="el-icon-lock"
           placeholder="请输入6-20位密码"
         ></el-input>
       </el-form-item>

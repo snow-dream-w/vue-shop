@@ -11,7 +11,7 @@
         </router-link>
       </div>
       <div class="person left" v-else>
-        <router-link to="/person">
+        <router-link :to="{name: 'person'}">
           <span class="hover">个人中心</span> |
         </router-link>
         <span class="hover" @click="logout">注销</span>

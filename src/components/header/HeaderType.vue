@@ -150,27 +150,27 @@ export default {
         {
           id: 0,
           name: "首页",
-          path: "/"
+          path: "/?menu=home"
         },
         {
           id: 1,
           name: "热门推荐",
-          path: "/about"
+          path: "/?menu=hot"
         },
         {
           id: 2,
           name: "限时折扣",
-          path: "/1"
+          path: "/?menu=precent"
         },
         {
           id: 3,
           name: "猜你喜欢",
-          path: "/2"
+          path: "/?menu=recommend"
         },
         {
           id: 4,
           name: "最新产品",
-          path: "/4"
+          path: "/?menu=new"
         }
       ]
     };
@@ -193,7 +193,14 @@ export default {
       }
     },
     outStyle() {
-      if (this.CIcon === false && this.$route.path !== "/") {
+      if (
+        this.CIcon === false &&
+        this.$route.path !== "/" &&
+        this.$route.path !== "/recommend" &&
+        this.$route.path !== "/hot" &&
+        this.$route.path !== "/new" &&
+        this.$route.path !== "/precent"
+      ) {
         this.CIcon = !this.CIcon;
       }
     },
@@ -208,7 +215,7 @@ export default {
       second[index].style.display = "none";
     },
     menuStyle(index, type) {
-      this.$store.dispatch("changeAnsyc_goods_type",type);
+      this.$store.dispatch("changeAnsyc_goods_type", type);
       let firstMenu = document.querySelectorAll(".menu-list");
       firstMenu.forEach(function(e) {
         e.classList.remove("first-menu-bg");
@@ -218,8 +225,8 @@ export default {
       let second = document.querySelectorAll(".second");
       second[index].style.display = "none";
     },
-    resetGoodsType(){
-      this.$store.dispatch("changeAnsyc_goods_type",'');
+    resetGoodsType() {
+      this.$store.dispatch("changeAnsyc_goods_type", "");
     }
   },
   computed: {
@@ -232,12 +239,19 @@ export default {
       if (
         newRoute !== "/" &&
         this.CIcon === false &&
-        newRoute !== "/1" &&
-        newRoute !== "/2" &&
-        newRoute !== "/4"
+        newRoute !== "/recommend" &&
+        newRoute !== "/hot" &&
+        newRoute !== "/new" &&
+        newRoute !== "/precent"
       ) {
         this.CIcon = !this.CIcon;
-      } else if (newRoute === "/") {
+      } else if (
+        newRoute === "/" ||
+        newRoute === "/recommend" ||
+        newRoute === "/hot" ||
+        newRoute === "/new" ||
+        newRoute === "/precent"
+      ) {
         this.CIcon = false;
       }
     }

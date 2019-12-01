@@ -4,7 +4,7 @@
     <header-query />
     <header-type />
     <transition>
-      <router-view id="router"></router-view>
+      <router-view ref="home" id="router"></router-view>
     </transition>
     <el-divider></el-divider>
     <footer>
@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import HeaderNav from "@/components/HeaderNav.vue";
-import HeaderQuery from "@/components/HeaderQuery.vue";
-import HeaderType from "@/components/HeaderType.vue";
+import HeaderNav from "@/components/header/HeaderNav.vue";
+import HeaderQuery from "@/components/header/HeaderQuery.vue";
+import HeaderType from "@/components/header/HeaderType.vue";
 
 export default {
   components: {
