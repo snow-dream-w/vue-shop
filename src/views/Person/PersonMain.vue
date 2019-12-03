@@ -18,12 +18,12 @@
             </router-link>
             <router-link to="/person/order/2">
               <MenuItem name="3">
-                <Icon type="ios-cube-outline" />待发货
+                <Icon type="ios-cube-outline" /> 待发货
               </MenuItem>
             </router-link>
             <router-link to="/person/order/3">
               <MenuItem name="4">
-                <Icon type="ios-car-outline" />已发货
+                <Icon type="ios-car-outline" /> 已发货
               </MenuItem>
             </router-link>
             <router-link to="/person/order/4">

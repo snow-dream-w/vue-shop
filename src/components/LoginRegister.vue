@@ -159,9 +159,9 @@ export default {
         })
         .then(res => {
           if (res.data.status === 0) {
-            console.log(res.data.data);
             this.point = res.data.data;
           } else {
+            this.$store.dispatch("changeAnsyc_car_num", res.data.data.busNum);
             this.$store.dispatch("changeAnsyc_login_status", false);
             this.$router.push(this.fromPath);
           }

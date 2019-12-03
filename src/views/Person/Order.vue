@@ -60,6 +60,12 @@
                   @click="goPay(scope.row._id)"
                 >去付款</el-button>
                 <el-button
+                  v-if="scope.row.status === 3"
+                  type="primary"
+                  size="small"
+                  @click="$message.error('确认收货，暂不可用')"
+                >确认收货</el-button>
+                <el-button
                   v-if="scope.row.status === 0 || scope.row.status === 4"
                   type="danger"
                   size="small"

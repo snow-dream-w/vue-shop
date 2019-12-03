@@ -1,5 +1,6 @@
 const state = {
-    carInfo: []
+    carInfo: [],
+    busNum: 0
 }
 const getters = {
     get_goods_total: state => {
@@ -13,13 +14,20 @@ const getters = {
         });
         return total
     },
+    get_goods_total: state => {
+        return state.busNum
+    }
 }
 const mutations = {
-    change_select_goods: (state, carInfo) => (state.carInfo = carInfo)
+    change_select_goods: (state, carInfo) => (state.carInfo = carInfo),
+    change_car_num: (state, num) => (state.busNum += num)
 }
 const actions = {
     changeAnsyc_select_goods(context,carInfo) {
         context.commit('change_select_goods',carInfo)
+    },
+    changeAnsyc_car_num(context,num) {
+        context.commit('change_car_num',num)
     }
 }
 

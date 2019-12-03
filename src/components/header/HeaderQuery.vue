@@ -14,7 +14,7 @@
         <div class="cart">
           <i class="el-icon-shopping-cart-2 icon-cart"></i>
           <span>购物车[</span>
-          <span class="num">{{ num }}</span>]
+          <span class="num">{{ busNum }}</span>]
           <i class="el-icon-right"></i>
         </div>
       </router-link>
@@ -22,13 +22,18 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   name: "HeaderQuery",
   data() {
     return {
       queryValue: "",
-      num: 0
     };
+  },
+  computed: {
+    ...mapState({
+      busNum: state => state.car_manager.busNum
+    })
   }
 };
 </script>

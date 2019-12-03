@@ -49,103 +49,13 @@
   </div>
 </template>
 <script>
+import options from '@/assets/menu'
 export default {
   name: "HeaderType",
   data() {
     return {
       CIcon: false,
-      menuList: [
-        {
-          value: "pinzhishengxian",
-          label: "品质生鲜",
-          children: [
-            {
-              value: "shuiguo",
-              label: "水果"
-            },
-            {
-              value: "shuicai",
-              label: "蔬菜"
-            }
-          ]
-        },
-        {
-          value: "meizhuanghuli",
-          label: "美妆护理",
-          children: [
-            {
-              value: "caizhuangxiangshui",
-              label: "彩妆香水"
-            },
-            {
-              value: "mianmoyanghu",
-              label: "面膜养护"
-            },
-            {
-              value: "gerenqingjie",
-              label: "个人清洁"
-            }
-          ]
-        },
-        {
-          value: "jingzhishenghuo",
-          label: "精致生活",
-          children: [
-            {
-              value: "jiajujiadian",
-              label: "家具家电"
-            },
-            {
-              value: "yundonghuwai",
-              label: "运动户外"
-            },
-            {
-              value: "xiefuxiangbao",
-              label: "鞋服箱包"
-            }
-          ]
-        },
-        {
-          value: "chajiuyinliao",
-          label: "茶酒饮料",
-          children: [
-            {
-              value: "putaojiu",
-              label: "葡萄酒"
-            },
-            {
-              value: "baijiu",
-              label: "白酒"
-            },
-            {
-              value: "pijiu",
-              label: "啤酒"
-            },
-            {
-              value: "guozhiyinliao",
-              label: "果汁饮料"
-            }
-          ]
-        },
-        {
-          value: "nongditechan",
-          label: "农地特产",
-          children: [
-            {
-              value: "wuguzaliang",
-              label: "五谷杂粮"
-            },
-            {
-              value: "shanzhenganhuo",
-              label: "山珍干货"
-            },
-            {
-              value: "liangyoufushi",
-              label: "粮油副食"
-            }
-          ]
-        }
-      ],
+      menuList: options,
       typeList: [
         {
           id: 0,

@@ -100,6 +100,10 @@ export default {
           this.init();
           break;
         case "recommend":
+          if (this.login_status === true) {
+            this.$router.push("/login_register/login");
+            break;
+          }
           this.getRecommend();
           break;
         case "new":
@@ -125,26 +129,27 @@ export default {
   },
   watch: {
     goods_type: function(newVal, oldVal) {
-      if(newVal){
+      if (newVal) {
         this.init(newVal);
       }
     },
     "$route.query.menu"(newVal, oldVal) {
       this.$store.dispatch("changeAnsyc_goods_type", "");
-      this.referGoods(newVal)
+      this.referGoods(newVal);
     }
   },
   computed: {
     ...mapGetters({
-      goods_type: "goods_type"
+      goods_type: "goods_type",
+      login_status: "login_status"
     })
   },
   components: {
     GoodsCard
   },
   created() {
-    if(this.$route.query.menu){
-      this.referGoods(this.$route.query.menu)
+    if (this.$route.query.menu) {
+      this.referGoods(this.$route.query.menu);
     } else {
       this.init(this.goods_type);
     }
@@ -154,7 +159,7 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  min-height: 400px;
+  min-height: 450px;
   ul {
     float: right;
     width: 940px;

@@ -49,8 +49,15 @@
             >提醒商家发货</el-button>
             <el-button
               v-if="tableData[0]&&tableData[0].status===3"
+              type="primary"
+              size="small"
+              @click="$message.error('确认收货，暂不可用')"
+            >确认收货</el-button>
+            <el-button
+              v-if="tableData[0]&&tableData[0].status===3"
               type="text"
               size="small"
+              @click="$message.error('查看物流，暂不可用')"
             >查看物流(暂不可用)</el-button>
             <el-button
               v-if="tableData[0]&&(tableData[0].status===0||tableData[0].status==4)"
