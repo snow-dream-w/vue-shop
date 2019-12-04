@@ -56,6 +56,11 @@ export default {
         this.$store.dispatch("changeAnsyc_login_status",false);
       }
     });
+    this.axios.get("/user/person").then(result => {
+      if (result.data.status === 1) {
+        this.$store.dispatch("changeAnsyc_car_num", result.data.data.busNum);
+      }
+    });
   }
 };
 </script>

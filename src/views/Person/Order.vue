@@ -63,7 +63,7 @@
                   v-if="scope.row.status === 3"
                   type="primary"
                   size="small"
-                  @click="$message.error('确认收货，暂不可用')"
+                  @click="confirmReceiving(scope.row._id)"
                 >确认收货</el-button>
                 <el-button
                   v-if="scope.row.status === 0 || scope.row.status === 4"
@@ -146,6 +146,22 @@ export default {
           });
         });
     },
+    confirmReceiving(orderId) {
+      this.$confirm("确认收到货物, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.completeOrder(orderId);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
+    },
     cancelOrder(orderId) {
       this.axios
         .post("/order/cancel", {
@@ -177,6 +193,30 @@ export default {
           this.$message.error("订单删除失败，请重新尝试！");
         }
       });
+    },
+    completeOrder(orderId) {
+      this.axios
+          .put(`/order/sending`, {
+            orderId,
+            status: 4
+          })
+          .then(result => {
+            if (result.data.status === 1) {
+              for(let index of this.tableData.keys()){
+                if (this.tableData[index]._id === orderId){
+                  this.tableData.splice(index, 1)
+                  break;
+                }
+              }
+              this.$message({
+                type: 'success',
+                message: '收货成功！'
+              })
+              this.$router.push("/order_detail/" + orderId);
+            } else {
+              this.$message.error("未知错误，请刷新重试");
+            }
+          });
     },
     initOrder() {
       const status = this.$route.params.status;

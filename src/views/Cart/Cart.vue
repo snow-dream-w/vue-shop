@@ -115,6 +115,7 @@ export default {
                   break;
                 }
               }
+              this.$store.dispatch('changeAnsyc_car_num', -1)
             } else{
               this.$router.push('*')
             }

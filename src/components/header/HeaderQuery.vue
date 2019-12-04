@@ -7,7 +7,8 @@
     </div>
     <div class="input">
       <div class="query">
-        <input v-model="queryValue" placeholder="请输入关键字" />
+        <input v-model="queryValue" placeholder="请输入关键字" autocomplete="off" />
+        <input style="position:fixed;bottom: -10000px;" type="text">
         <el-button type="primary" icon="el-icon-search">搜索</el-button>
       </div>
       <router-link :to="{name: 'cart'}">

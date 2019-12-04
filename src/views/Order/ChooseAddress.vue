@@ -114,6 +114,7 @@ export default {
         .then(result => {
           if (result.data.status === 1) {
             this.$store.dispatch("changeAnsyc_select_goods", []);
+            this.$store.dispatch('changeAnsyc_car_num', this.goodsArray.length)
             this.$router.push(`/pay_order/${result.data.data._id}`);
           } else {
             this.$message({
