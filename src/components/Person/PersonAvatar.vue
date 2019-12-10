@@ -21,6 +21,7 @@ export default {
   },
   created(){
     let cookies = document.cookie.split(";");
+    // 取出头像
     cookies.forEach(value => {
       if(value.indexOf("avatar=") !== -1){
         let avatar = value.split("=");

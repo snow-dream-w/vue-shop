@@ -134,14 +134,21 @@ export default {
     handleChange(value) {
       console.log(value);
     },
-    // 即将关闭的时候，调用这个处理函数
+    /**
+     * 即将关闭的时候，调用这个处理函数
+     */
     closeHandler() {
       console.log("closeHandler");
     },
-    // 完全关闭之后，调用这个函数清理资源
+    /**
+     * 完全关闭之后，调用这个函数清理资源
+     */
     destroyHandler() {
       console.log("destroyHandler");
     },
+    /**
+     * 将商品添加至购物车
+     */
     addCar() {
       this.axios
         .post("/car/add", {
@@ -163,6 +170,9 @@ export default {
           }
         });
     },
+    /**
+     * 购买商品
+     */
     buyGoods() {
       this.axios
         .post("/car/add", {
@@ -181,6 +191,7 @@ export default {
     }
   },
   created() {
+    // 初始化商品详情数据
     this.axios
       .get("/goods/goodsDetail/" + this.$route.params.id)
       .then(result => {

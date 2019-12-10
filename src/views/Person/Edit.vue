@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-import changePassword from "../../components/ChangePassword";
+import changePassword from "@/components/Person/ChangePassword";
 export default {
   data() {
     var validateName = (rule, value, callback) => {
@@ -92,6 +92,9 @@ export default {
     };
   },
   methods: {
+    /**
+     * 提交编辑信息
+     */
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -114,12 +117,21 @@ export default {
         }
       });
     },
+    /**
+     * 重置表单
+     */
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    /**
+     * 响应头像上传成功
+     */
     handleAvatarSuccess(res, file) {
       this.avatar = URL.createObjectURL(file.raw);
     },
+    /**
+     * 头像上传之前检测
+     */
     beforeAvatarUpload(file) {
       const isJPG = (file.type === "image/jpeg") | (file.type === "image/png");
       const isLt2M = file.size / 1024 / 1024 < 4;
@@ -137,6 +149,9 @@ export default {
     changePassword
   },
   created() {
+    /**
+     * 初始化个人信息
+     */
     this.axios.get("/user/person").then(result => {
       if(result.data.status === 0){
         this.$router.push('/login_register/login');

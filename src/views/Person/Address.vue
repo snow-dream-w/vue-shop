@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import EditAddress from "@/components/EditAddress.vue";
+import EditAddress from "@/components/Person/EditAddress";
 export default {
   data() {
     return {
@@ -50,14 +50,23 @@ export default {
     };
   },
   methods: {
+    /**
+     * 响应查看地址
+     */
     handleQuery(row) {
       this.$refs.addressEdit.isShow("query");
       this.$refs.addressEdit.init(row);
     },
+    /**
+     * 响应编辑地址
+     */
     handleEdit(row) {
       this.$refs.addressEdit.isShow("edit");
       this.$refs.addressEdit.init(row);
     },
+    /**
+     * 设为默认地址
+     */
     handleDefault(_id) {
       this.axios
         .post("/address/default", {
@@ -74,6 +83,9 @@ export default {
           this.$router.push("/*");
         });
     },
+    /**
+     * 删除地址
+     */
     handleDelete(_id) {
       this.$confirm("此操作将永久删除该地址, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -90,6 +102,9 @@ export default {
           });
         });
     },
+    /**
+     * 确认删除地址
+     */
     addressDelete(_id) {
       this.axios
         .delete("/address/delete/" + _id)
@@ -111,6 +126,9 @@ export default {
           this.$router.push("/*");
         });
     },
+    /**
+     * 初始化地址数据
+     */
     init() {
       this.axios
         .get("/address/get/10")

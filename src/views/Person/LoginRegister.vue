@@ -118,6 +118,9 @@ export default {
     };
   },
   methods: {
+    /**
+     * 提交选择登录注册
+     */
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -129,6 +132,9 @@ export default {
         }
       });
     },
+    /**
+     * 注册
+     */
     register() {
       this.axios
         .post("/user/register", {
@@ -151,6 +157,9 @@ export default {
           }
         });
     },
+    /**
+     * 登录
+     */
     login() {
       this.axios
         .post("/user/login", {
@@ -167,9 +176,15 @@ export default {
           }
         });
     },
+    /**
+     * 重置信息
+     */
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    /**
+     * 响应登录和注册面板的切换
+     */
     handleClick(tab, event) {
       this.$refs["ruleForm"].clearValidate();
       if (tab.name === "login") {
@@ -178,12 +193,18 @@ export default {
         this.choose = true;
       }
     },
+    /**
+     * 监听表单的变化
+     */
     changeValue(prop) {
       this.point = "";
       this.$refs["ruleForm"].clearValidate(prop); //prop是表单的prop值
     }
   },
   watch: {
+    /**
+     * 监听面板值变化
+     */
     activeName(value) {
       if (value === "register") {
         this.middle.name = this.ruleForm.name;
@@ -199,6 +220,9 @@ export default {
         this.choose = false;
       }
     },
+    /**
+     * 监听路由变化
+     */
     "$route.path"(newRouter, oldRouter) {
       if (newRouter.includes("/register")) {
         this.activeName = "register";
@@ -211,12 +235,18 @@ export default {
       }
     }
   },
+  /**
+   * 前置路有钩子
+   */
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.fromPath = from.path;
     });
   },
   created() {
+    /**
+     * 初始化信息
+     */
     let idCard = this.$route.params.id;
     if (idCard == "register") {
       this.choose = true;
@@ -237,7 +267,7 @@ export default {
 .l-r {
   width: 1140px;
   height: 600px;
-  background: url("../assets/loginbg.jpg") no-repeat;
+  background: url("../../assets/loginbg.jpg") no-repeat;
   .el-form {
     position: relative;
     float: right;

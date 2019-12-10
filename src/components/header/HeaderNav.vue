@@ -23,8 +23,8 @@
         <li class="hover">
           <router-link :to="{name: 'person'}">我的订单</router-link>
         </li>
-        <li class="hover">购物记录</li>
-        <li class="hover">联系客服</li>
+        <li class="hover" @click="$message({type:'warning',message:'购物记录,暂不可用'})">购物记录</li>
+        <li class="hover" @click="$message({type:'warning',message:'联系客服,暂不可用'})">联系客服</li>
       </ul>
     </div>
   </div>
@@ -34,6 +34,9 @@ import { mapGetters } from "vuex";
 export default {
   name: "HeaderNav",
   methods: {
+    /**
+     * 退出登录
+     */
     logout() {
       this.axios.get("/user/logout").then(result => {
         if (result.data.status === 1) {
@@ -51,11 +54,13 @@ export default {
     })
   },
   created() {
+    // 验证登录状态
     this.axios.get("/user/check_login").then(result => {
       if (result.data.status === 1) {
         this.$store.dispatch("changeAnsyc_login_status",false);
       }
     });
+    // 初始化购物车数量
     this.axios.get("/user/person").then(result => {
       if (result.data.status === 1) {
         this.$store.dispatch("changeAnsyc_car_num", result.data.data.busNum);

@@ -16,7 +16,7 @@
           @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-sizes="[8, 12, 16]"
-          :page-size="100"
+          :page-size="12"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
         ></el-pagination>
@@ -32,46 +32,41 @@ export default {
   name: "home",
   data() {
     return {
-      currentPage: 0,
+      currentPage: 1,
       total: 0,
-      limit: 8, //此条仅为限制数组
+      limit: 12, //此条仅为限制数组
       page: 1, //当前页
       list: []
     };
   },
   methods: {
+    /**
+     * 监测分页换数量按钮
+     */
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`);
       this.limit = val;
-      this.init();
+      const menu = this.$route.query.menu;
+      this.referGoods(menu);
     },
+    /**
+     * 监听翻页
+     */
     handleCurrentChange(val) {
-      this.axios
-        .get("/goods/query", {
-          params: {
-            limit: 8,
-            status: 1,
-            skip: val - 1
-          }
-        })
-        .then(result => {
-          if (result.data.status === 1) {
-            this.list = result.data.data;
-            this.total = result.data.count;
-          } else {
-            alert(404);
-          }
-        });
+      this.page = val;
+      const menu = this.$route.query.menu;
+      this.referGoods(menu);
     },
-    // handleGoodsInfo(id) {
-    //   this.$router.replace("/goods/" + id);
-    // },
+    /**
+     * 初始化数据
+     */
     init(goods_type) {
       this.axios
         .get("/goods/query", {
           params: {
             type: goods_type,
             limit: this.limit,
+            skip: this.page - 1,
             status: 1
           }
         })
@@ -84,16 +79,42 @@ export default {
           }
         });
     },
+    /**
+     * 获取推荐商品
+     */
     getRecommend() {
-      this.axios.get("/goods/recommend/user").then(result => {
+      this.axios
+        .get("/goods/recommend/user", {
+          params: {
+            limit: this.limit,
+            page: this.page
+          }
+        })
+        .then(result => {
+          if (result.data.status === 1) {
+            this.list = result.data.data;
+            this.total = result.data.count;
+          } else {
+            this.$message.error("暂无推荐商品");
+          }
+        });
+    },
+    /**
+     * 获取热门商品
+     */
+    getHotGoods() {
+      this.axios.get(`/goods/hot/${this.limit}`).then(result => {
         if (result.data.status === 1) {
           this.list = result.data.data;
-          this.total = result.data.count;
+          this.total = result.data.data.length;
         } else {
-          this.$message.error("暂无推荐商品");
+          this.$message.error("暂无热门商品");
         }
       });
     },
+    /**
+     * 刷新商品
+     */
     referGoods(menu) {
       switch (menu) {
         case "home":
@@ -113,10 +134,7 @@ export default {
           });
           break;
         case "hot":
-          this.$message({
-            type: "warning",
-            message: "此功能暂不可用"
-          });
+          this.getHotGoods();
           break;
         case "precent":
           this.$message({
@@ -124,15 +142,24 @@ export default {
             message: "此功能暂不可用"
           });
           break;
+        default:
+          this.init()
+          break;
       }
     }
   },
   watch: {
+    /**
+     * 监听商品类型状态的改变
+     */
     goods_type: function(newVal, oldVal) {
       if (newVal) {
         this.init(newVal);
       }
     },
+    /**
+     * 监听路由的变化
+     */
     "$route.query.menu"(newVal, oldVal) {
       this.$store.dispatch("changeAnsyc_goods_type", "");
       this.referGoods(newVal);
@@ -159,7 +186,7 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  min-height: 450px;
+  min-height: 600px;
   ul {
     float: right;
     width: 940px;

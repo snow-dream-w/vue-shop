@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import options from "../assets/city";
+import options from "@/assets/city";
 export default {
   data() {
     const checkName = (rule, value, callback) => {
@@ -118,6 +118,9 @@ export default {
     };
   },
   methods: {
+    /**
+     * 提交修改信息
+     */
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -174,15 +177,27 @@ export default {
         }
       });
     },
+    /**
+     * 重置表单
+     */
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    /**
+     * 响应表单
+     */
     handleChange(value) {
       console.log(value);
     },
+    /**
+     * 初始化个人信息
+     */
     init(addressInfo) {
       this.ruleForm = addressInfo;
     },
+    /**
+     * 控制打开编辑地址的方式
+     */
     isShow(way) {
       this.openWay = way;
       this.disabled = false;

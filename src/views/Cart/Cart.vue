@@ -71,9 +71,15 @@ export default {
     };
   },
   methods: {
+    /**
+     * 全部选择购物车商品
+     */
     toggleSelection() {
       this.$refs.multipleTable.clearSelection();
     },
+    /**
+     * 响应改变商品的选中状态
+     */
     handleSelectionChange(val) {
       let b = [];
       this.multipleSelection = val;
@@ -82,15 +88,24 @@ export default {
         this.tatal += val[item].goodsId.price * val[item].num;
       }
     },
+    /**
+     * 删除购物车商品
+     */
     handleDelete(index, row) {
-      this.open(row._id);
+      this.confirmDelete(row._id);
     },
+    /**
+     * 响应购物车选中改变
+     */
     handleChange(index) {
       let id = new Number(index);
       this.$refs.multipleTable.toggleRowSelection(this.tableData[id - 1]);
       this.$refs.multipleTable.toggleRowSelection(this.tableData[id - 1]);
       // this.$refs.multipleTable.toggleRowSelection(index);
     },
+    /**
+     * 结算购物车
+     */
     carSettle() {
       if(this.multipleSelection.length === 0){
         this.$message.error('请选择要结算的商品');
@@ -99,7 +114,10 @@ export default {
       this.$store.dispatch("changeAnsyc_select_goods", this.multipleSelection);
       this.$router.push("/choose_address");
     },
-    open(_id) {
+    /**
+     * 确认删除购物车商品
+     */
+    confirmDelete(_id) {
       this.$confirm("将该商品从购物车删除, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -125,6 +143,7 @@ export default {
     }
   },
   created() {
+    // 初始化商品数据
     this.axios.get("/car/get").then(result => {
       this.tableData = result.data.data;
       for (let index = 0; index < this.tableData.length; index++) {

@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import axios from 'axios'
 
 //公共组件
-const LoginRegister = () => import('@/components/LoginRegister.vue')
+const LoginRegister = () => import('@/views/Person/LoginRegister.vue')
 //一级路由
 const Home = () => import('@/views/Home.vue')
 const NotFound = () => import('@/views/NotFound.vue')

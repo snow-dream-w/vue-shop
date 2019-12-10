@@ -54,6 +54,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * 初始化订单数据
+     */
     initOrder(orderId) {
       this.axios
         .get(`/order/get/${orderId}`)
@@ -69,6 +72,9 @@ export default {
           this.$router.push("/*");
         });
     },
+    /**
+     * 验证支付密码
+     */
     openInputPassword() {
       this.$prompt("请输入支付密码（暂时默认123456）", "提示", {
         confirmButtonText: "确定",
@@ -89,11 +95,17 @@ export default {
           });
         });
     },
+    /**
+     * 提示密码输入错误
+     */
     openPrompt() {
         this.$alert('支付密码输入错误，请重试', '提示', {
           confirmButtonText: '确定',
         });
     },
+    /**
+     * 确认支付
+     */
     okPay() {
       this.axios
         .post(`/order/account`, {

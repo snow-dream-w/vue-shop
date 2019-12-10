@@ -76,7 +76,7 @@
 <script>
 import _ from "lodash";
 import { mapGetters } from "vuex";
-import EditAddress from "@/components/EditAddress.vue";
+import EditAddress from "@/components/Person/EditAddress.vue";
 export default {
   data() {
     return {

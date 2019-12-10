@@ -7,7 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import 'iview/dist/styles/iview.css';
 
 //导入全局组件
-import PersonAvatar from '@/components/PersonAvatar.vue';
+import PersonAvatar from '@/components/Person/PersonAvatar.vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 

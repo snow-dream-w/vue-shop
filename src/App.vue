@@ -6,18 +6,19 @@
     <transition>
       <router-view ref="home" id="router"></router-view>
     </transition>
-    <el-divider></el-divider>
-    <footer>
+    <div style="height: 30px"></div>
+    <!-- <el-divider></el-divider> -->
+    <!-- <footer>
       脚部描述
       <br />二号小店有限公司
-    </footer>
+    </footer> -->
   </div>
 </template>
 
 <script>
-import HeaderNav from "@/components/header/HeaderNav.vue";
-import HeaderQuery from "@/components/header/HeaderQuery.vue";
-import HeaderType from "@/components/header/HeaderType.vue";
+import HeaderNav from "@/components/Header/HeaderNav.vue";
+import HeaderQuery from "@/components/Header/HeaderQuery.vue";
+import HeaderType from "@/components/Header/HeaderType.vue";
 
 export default {
   components: {
@@ -49,7 +50,7 @@ export default {
     }
     margin: 0 auto;
     width: 1140px;
-    min-height: 400px
+    min-height: 600px
   }
   footer {
     width: 100%;

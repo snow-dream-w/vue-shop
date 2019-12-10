@@ -73,8 +73,11 @@ export default {
     };
   },
   methods: {
+    /**
+     * 监听菜单变化
+     */
     clickHandle(){
-      console.log(this.$refs.selection.currentActiveName+"监听路由");
+      // console.log(this.$refs.selection.currentActiveName+"监听路由");
     }
   }
 };

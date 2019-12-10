@@ -91,7 +91,7 @@
               <el-table-column label="单位" prop="goodsId.unit" width="140"></el-table-column>
               <el-table-column label="操作" width="135">
                 <template slot-scope="scope">
-                  <el-button v-if="scope.row.status === 2&&tableData[0]&&tableData[0].status===4" type="primary" size="small">评价商品</el-button>
+                  <el-button v-if="scope.row.status === 2&&tableData[0]&&tableData[0].status===4" type="primary" size="small" @click="$refs.comment.initOpen(scope.row._id, scope.row.goodsId._id)">评价商品</el-button>
                   <el-button v-if="scope.row.status === 3&&tableData[0]&&tableData[0].status===4" type="primary" size="small">追评</el-button>
                   <el-button v-if="scope.row.status === 4&&tableData[0]&&tableData[0].status===4" type="text" size="small">修改评论(暂不可用)</el-button>
                 </template>
@@ -107,16 +107,21 @@
         </el-table-column>
       </el-table>
     </div>
+    <Comment ref="comment" @initOrder="initOrder" />
   </div>
 </template>
 
 <script>
+import Comment from "@/components/Dialog/Comment.vue";
 export default {
   data() {
     return {
       tableData: [],
       statusEnum: ["已取消", "待付款", "待发货", "已发货", "已完成"]
     };
+  },
+  components: {
+    Comment
   },
   filters: {
     formatDate(dates) {
@@ -143,9 +148,15 @@ export default {
     }
   },
   methods: {
+    /**
+     * 去付款
+     */
     goPay(orderId) {
       this.$router.push(`/pay_order/${orderId}`);
     },
+    /**
+     * 确认取消订单
+     */
     confirmCancel(orderId) {
       this.$confirm("确认取消订单, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -162,6 +173,9 @@ export default {
           });
         });
     },
+    /**
+     * 确认删除订单
+     */
     confirmDelete(orderId) {
       this.$confirm("删除订单不可恢复, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -178,6 +192,9 @@ export default {
           });
         });
     },
+    /**
+     * 取消订单
+     */
     cancelOrder(orderId) {
       this.axios
         .post("/order/cancel", {
@@ -195,6 +212,9 @@ export default {
           }
         });
     },
+    /**
+     * 删除订单
+     */
     deleteOrder(orderId) {
       this.axios.delete(`/order/delete/${orderId}`).then(result => {
         if (result.data.status === 1) {
@@ -208,11 +228,14 @@ export default {
         }
       });
     },
+    /**
+     * 初始化订单数据
+     */
     initOrder(orderId) {
       this.axios.get(`/order/get/${orderId}`).then(result => {
         if (result.data.status === 1) {
           //成功取得数据，准备交互
-          this.tableData.push(result.data.data);
+          this.tableData.splice(0, 1, result.data.data);
         } else {
           this.$router.push("/*");
         }

@@ -108,12 +108,21 @@ export default {
     }
   },
   methods: {
+    /**
+     * 切换订单详情页面
+     */
     orderDetails(orderId) {
       this.$router.push("/order_detail/" + orderId);
     },
+    /**
+     * 去支付
+     */
     goPay(orderId) {
       this.$router.push(`/pay_order/${orderId}`);
     },
+    /**
+     * 取消订单
+     */
     confirmCancel(orderId) {
       this.$confirm("确认取消订单, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -130,6 +139,9 @@ export default {
           });
         });
     },
+    /**
+     * 确认取消订单
+     */
     confirmDelete(orderId) {
       this.$confirm("删除订单不可恢复, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -146,6 +158,9 @@ export default {
           });
         });
     },
+    /**
+     * 确认收到货物
+     */
     confirmReceiving(orderId) {
       this.$confirm("确认收到货物, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -162,6 +177,9 @@ export default {
           });
         });
     },
+    /**
+     * 取消订单
+     */
     cancelOrder(orderId) {
       this.axios
         .post("/order/cancel", {
@@ -180,6 +198,9 @@ export default {
           }
         });
     },
+    /**
+     * 删除订单
+     */
     deleteOrder(orderId) {
       this.axios.delete(`/order/delete/${orderId}`).then(result => {
         if (result.data.status === 1) {
@@ -194,6 +215,9 @@ export default {
         }
       });
     },
+    /**
+     * 完成订单
+     */
     completeOrder(orderId) {
       this.axios
           .put(`/order/sending`, {
@@ -218,6 +242,9 @@ export default {
             }
           });
     },
+    /**
+     * 初始化订单数据
+     */
     initOrder() {
       const status = this.$route.params.status;
       let url = "";

@@ -84,6 +84,9 @@ export default {
     };
   },
   methods: {
+    /**
+     * 提交修改信息
+     */
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -109,6 +112,9 @@ export default {
         }
       });
     },
+    /**
+     * 重置表单
+     */
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }

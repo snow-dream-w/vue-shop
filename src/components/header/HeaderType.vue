@@ -86,9 +86,15 @@ export default {
     };
   },
   methods: {
+    /**
+     * 控制菜单的打开和关闭
+     */
     controllerMenu() {
       this.CIcon = !this.CIcon;
     },
+    /**
+     * 响应点击菜单
+     */
     clickMenu(index, router) {
       let typeDom = document.querySelectorAll("#type .menu .type li");
       typeDom.forEach(element => {
@@ -97,11 +103,17 @@ export default {
       typeDom[index].setAttribute("class", "click");
       this.$router.replace(router);
     },
+    /**
+     * 打开拉菜单
+     */
     selectStyle() {
       if (this.CIcon === true && this.$route.path !== "/") {
         this.CIcon = !this.CIcon;
       }
     },
+    /**
+     * 收起菜单
+     */
     outStyle() {
       if (
         this.CIcon === false &&
@@ -114,16 +126,25 @@ export default {
         this.CIcon = !this.CIcon;
       }
     },
+    /**
+     * 响应鼠标悬停事件
+     */
     handleHoverOver(index) {
       let second = document.querySelectorAll(".second");
       second[index].style.display = "block";
       document.querySelector(".select").style.overflow = "unset";
     },
+    /**
+     * 响应鼠标离开事件
+     */
     handleHoverOut(index) {
       document.querySelector(".select").style.overflow = "hidden";
       let second = document.querySelectorAll(".second");
       second[index].style.display = "none";
     },
+    /**
+     * 改变菜单样式
+     */
     menuStyle(index, type) {
       this.$store.dispatch("changeAnsyc_goods_type", type);
       let firstMenu = document.querySelectorAll(".menu-list");
@@ -135,6 +156,9 @@ export default {
       let second = document.querySelectorAll(".second");
       second[index].style.display = "none";
     },
+    /**
+     * 重置商品类型状态
+     */
     resetGoodsType() {
       this.$store.dispatch("changeAnsyc_goods_type", "");
     }
