@@ -149,6 +149,10 @@ export default {
       for (let index = 0; index < this.tableData.length; index++) {
         this.tableData[index]["id"] = index + 1;
       }
+      // 按照更新时间逆序排序
+      this.tableData.sort((a, b) => {
+        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      })
       this.loading = false
     });
   }

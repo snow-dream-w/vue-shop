@@ -162,7 +162,13 @@ export default {
               message: "成功加入购物车",
               type: "success"
             });
-            this.$store.dispatch('changeAnsyc_car_num', 1)
+            this.$store.dispatch("changeAnsyc_car_num", 1);
+          } else if (result.data.status === "inc") {
+            this.$notify({
+              title: "成功",
+              message: "成功加入购物车",
+              type: "success"
+            });
           } else if (result.data.data == "未登录") {
             this.$router.push("/login_register/login");
           } else {
